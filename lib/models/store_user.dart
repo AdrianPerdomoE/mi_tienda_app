@@ -1,6 +1,6 @@
 import './cart.dart';
 
-class User {
+class StoreUser {
   String id;
   String email;
   String name;
@@ -10,7 +10,7 @@ class User {
   DateTime creationDate;
   double maxCredit;
 
-  User({
+  StoreUser({
     required this.id,
     required this.email,
     required this.name,
@@ -21,7 +21,7 @@ class User {
     required this.cart,
   });
 
-  User.fromJson(Map<String, dynamic> json)
+  StoreUser.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         email = json['email'],
         name = json['name'],

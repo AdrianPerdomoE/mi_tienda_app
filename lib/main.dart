@@ -1,4 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+//screens
+import 'views/screens/shared/login_screen.dart';
+import './views/screens/shared/splash_screen.dart';
+//packages
+
+//services
+import './controllers/services/navigation_service.dart';
+//providers
+import './controllers/providers/authentication_provider.dart ';
 
 void main() {
   runApp(const MainApp());
@@ -9,10 +19,29 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthenticationProvider>(
+            create: (BuildContext context) => AuthenticationProvider()),
+      ],
+      child: MaterialApp(
+        navigatorKey: NavigationService.navigatorKey,
+        routes: {
+          '/login': (BuildContext context) => const LoginScreen(),
+          '/': (BuildContext context) => SplashScreen(
+                key: UniqueKey(),
+              ),
+        },
+        initialRoute: '/',
+        debugShowCheckedModeBanner: false,
+        title: "Mi tienda App",
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromRGBO(36, 35, 49, 1)),
+          scaffoldBackgroundColor: const Color.fromRGBO(36, 35, 49, 1),
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            backgroundColor: Color.fromRGBO(30, 29, 37, 1),
+          ),
         ),
       ),
     );

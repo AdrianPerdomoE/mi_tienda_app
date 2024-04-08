@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "108517181665",
+    "project_id": "mi-tienda-app-801c9",
+    "storage_bucket": "mi-tienda-app-801c9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:108517181665:android:20f0fe8c911adfcdff4fa0",
+        "android_client_info": {
+          "package_name": "com.example.mi_tienda_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClaUm72lC80cw-89sZgt6mmT74B-db4rk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
