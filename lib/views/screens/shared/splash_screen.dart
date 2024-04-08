@@ -35,6 +35,8 @@ class _SplashScreenState extends State<SplashScreen> {
 // En el estado si quiero acceder a una propiedad o funcion de la clase padre, debo usar widget.variable
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Mi tienda App",
@@ -45,8 +47,8 @@ class _SplashScreenState extends State<SplashScreen> {
       home: Scaffold(
         body: Center(
           child: Container(
-            height: 200,
-            width: 200,
+            height: height,
+            width: width,
             decoration: const BoxDecoration(
                 image: DecorationImage(
                     fit: BoxFit.contain,

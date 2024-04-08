@@ -26,7 +26,7 @@ class AuthenticationProvider extends ChangeNotifier {
           //_navigationService.removeAndNavigateToRoute('/home');
         });
       } else {
-        _navigationService.removeAndNavigateToRoute('/login');
+        //_navigationService.removeAndNavigateToRoute('/login');
       }
     });
   }

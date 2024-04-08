@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
-    final _auth = context.read<AuthenticationProvider>();
+    _auth = context.read<AuthenticationProvider>();
     _navigationService = GetIt.instance.get<NavigationService>();
 
     return _buildUI();
