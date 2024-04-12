@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 //screens
 import 'views/screens/customer/customer_home_screen.dart';
 import 'views/screens/admin/admin_home_screen.dart';
 import 'views/screens/shared/login_screen.dart';
 import './views/screens/shared/splash_screen.dart';
+import 'views/screens/shared/register_screen.dart';
 //packages
 
 //services
@@ -39,6 +41,7 @@ MaterialApp _buildMaterialApp(BuildContext context) {
             key: UniqueKey(),
           ),
       '/login': (context) => const LoginScreen(),
+      '/register': (context) => const RegisterScreen(),
       '/admin-home': (context) => const AdminHomeScreen(),
       '/customer-home': (context) => const CustomerHomeScreen(),
     },

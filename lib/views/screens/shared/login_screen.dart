@@ -128,7 +128,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _registerAccountLink() {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        _navigationService.navigateToRoute('/register');
+      },
       child: const Text(
         "Don't have an account? Register here!",
         style: TextStyle(
