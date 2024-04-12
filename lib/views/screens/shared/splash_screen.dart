@@ -5,7 +5,7 @@ import "package:flutter/material.dart";
 import "package:get_it/get_it.dart";
 
 import "../../../controllers/services/cloud_storage_service.dart";
-import "../../../controllers/services/database_service.dart";
+import '../../../controllers/services/user_database_service.dart';
 import "../../../controllers/services/media_service.dart";
 import "../../../controllers/services/navigation_service.dart";
 
@@ -52,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
             decoration: const BoxDecoration(
                 image: DecorationImage(
                     fit: BoxFit.contain,
-                    image: AssetImage("assets/images/logo.jpg"))),
+                    image: AssetImage("assets/images/logo.png"))),
           ),
         ),
       ),
@@ -74,6 +74,7 @@ class _SplashScreenState extends State<SplashScreen> {
     GetIt.instance.registerSingleton<MediaService>(MediaService());
     GetIt.instance
         .registerSingleton<CloudStorageService>(CloudStorageService());
-    GetIt.instance.registerSingleton<DatabaseService>(DatabaseService());
+    GetIt.instance
+        .registerSingleton<UserDatabaseService>(UserDatabaseService());
   }
 }

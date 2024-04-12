@@ -28,6 +28,12 @@ class Cart {
   void emptyCart() {
     items = [];
   }
+
+  toJson() {
+    return {
+      "items": items.map((item) => item.toJson()).toList(),
+    };
+  }
 }
 
 class CartItem {
@@ -53,4 +59,15 @@ class CartItem {
         quantity = json['quantity'],
         imageUrl = json['imageUrl'],
         descount = json['descount'];
+
+  toJson() {
+    return {
+      "productId": productId,
+      "productName": productName,
+      "price": price,
+      "quantity": quantity,
+      "imageUrl": imageUrl,
+      "descount": descount,
+    };
+  }
 }

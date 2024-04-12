@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 //screens
+import 'views/screens/customer/customer_home_screen.dart';
+import 'views/screens/admin/admin_home_screen.dart';
 import 'views/screens/shared/login_screen.dart';
 import './views/screens/shared/splash_screen.dart';
 //packages
@@ -33,10 +35,12 @@ MaterialApp _buildMaterialApp(BuildContext context) {
   return MaterialApp(
     navigatorKey: NavigationService.navigatorKey,
     routes: {
-      '/login': (context) => const LoginScreen(),
       '/': (context) => SplashScreen(
             key: UniqueKey(),
           ),
+      '/login': (context) => const LoginScreen(),
+      '/admin-home': (context) => const AdminHomeScreen(),
+      '/customer-home': (context) => const CustomerHomeScreen(),
     },
     initialRoute: '/',
     debugShowCheckedModeBanner: false,
