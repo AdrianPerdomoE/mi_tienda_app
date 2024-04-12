@@ -13,11 +13,12 @@ class CloudStorageService {
       Reference reference =
           _storage.ref().child('images/users/$uid/profile.${image.extension}');
       UploadTask task = reference.putFile(File(image.path!));
-      await task.then((result) {
+      return await task.then((result) {
         return result.ref.getDownloadURL();
       });
     } catch (e) {
       print(e);
+      return null;
     }
   }
 
@@ -27,9 +28,12 @@ class CloudStorageService {
       Reference reference = _storage.ref().child(
           'images/chats/$chatID/${userID}_${Timestamp.now().millisecondsSinceEpoch}.${image.extension}');
       UploadTask task = reference.putFile(File(image.path!));
-      return await task.then((result) => result.ref.getDownloadURL());
+      return await task.then((result) {
+        return result.ref.getDownloadURL();
+      });
     } catch (e) {
       print(e);
+      return null;
     }
   }
 }

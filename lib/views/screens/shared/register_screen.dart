@@ -59,19 +59,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: Container(
         padding: EdgeInsets.symmetric(
             horizontal: _deviceWidth * 0.03, vertical: _deviceHeight * 0.02),
+        margin: EdgeInsets.only(top: _deviceHeight * 0.05),
         height: _deviceHeight * 0.98,
         width: _deviceWidth * 0.97,
         child: Column(
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _profileImageField(),
             _registerForm(),
-            SizedBox(
-              height: _deviceHeight * 0.05,
-            ),
-            _registerButton()
           ],
         ),
       ),
@@ -110,7 +107,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _registerForm() {
     return Container(
-      height: _deviceHeight * 0.40,
+      height: _deviceHeight * 0.65,
       margin: EdgeInsets.symmetric(
           horizontal: _deviceWidth * 0.02, vertical: _deviceHeight * 0.02),
       child: Form(
@@ -156,6 +153,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   regex: r'.{8,}',
                   hintText: "Contraseña",
                   obscureText: true),
+              _registerButton()
             ],
           )),
     );

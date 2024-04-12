@@ -39,7 +39,7 @@ class UserDatabaseService {
         "name": name,
         "email": email,
         "image": imageUrl,
-        "creationDate": DateTime.now().toIso8601String(),
+        "creationDate": Timestamp.now(),
         "role": customer,
         "cart": Cart(items: []).toJson(),
         "maxCredit": 10000.0,
