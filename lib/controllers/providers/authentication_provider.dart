@@ -55,6 +55,7 @@ class AuthenticationProvider extends ChangeNotifier {
     } catch (e) {
       print("Error registering user: ${e}");
     }
+    return null;
   }
 
   Future<void> logOut() async {

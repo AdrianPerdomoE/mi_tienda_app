@@ -8,6 +8,7 @@ import '../../widgets/rounded_button.dart';
 import '../../../controllers/providers/authentication_provider.dart';
 //services
 import '../../../controllers/services/navigation_service.dart';
+import 'package:mi_tienda_app/controllers/services/app_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? email;
   String? password;
   late AuthenticationProvider _auth;
+  final AppService _appService = AppService();
   late NavigationService _navigationService;
 
   @override
@@ -30,7 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
     _deviceWidth = MediaQuery.of(context).size.width;
     _auth = context.read<AuthenticationProvider>();
     _navigationService = GetIt.instance.get<NavigationService>();
-
     return _buildUI();
   }
 
@@ -67,10 +68,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _pageTitle() {
     return SizedBox(
       height: _deviceHeight * 0.1,
-      child: const Text(
-        "Mi tienda APP",
+      child: Text(
+        _appService.appName,
         style: TextStyle(
-          color: Colors.white,
+          color: _appService.textColor,
           fontSize: 40,
           fontWeight: FontWeight.w600,
         ),
@@ -131,10 +132,10 @@ class _LoginScreenState extends State<LoginScreen> {
       onTap: () {
         _navigationService.navigateToRoute('/register');
       },
-      child: const Text(
+      child: Text(
         "Don't have an account? Register here!",
         style: TextStyle(
-          color: Colors.blueAccent,
+          color: _appService.accentColor,
         ),
       ),
     );
