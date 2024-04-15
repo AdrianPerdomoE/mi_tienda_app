@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'customer_profile_screen.dart';
 //widgets
 import "../../widgets/logout_button.dart";
 
@@ -31,9 +32,14 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (value) {
-            setState(() {
-              _currentIndex = value;
-            });
+            if (value == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CustomerProfileScreen(),
+                ),
+              );
+            }
           },
           items: const [
             BottomNavigationBarItem(
