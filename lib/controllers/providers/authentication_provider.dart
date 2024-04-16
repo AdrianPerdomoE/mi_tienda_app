@@ -25,6 +25,8 @@ class AuthenticationProvider extends ChangeNotifier {
             notifyListeners();
             _navigationService
                 .removeAndNavigateToRoute('/${value.role.toLowerCase()}-home');
+          } else {
+            _auth.signOut();
           }
         });
       } else {
