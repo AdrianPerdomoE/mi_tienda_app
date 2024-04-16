@@ -67,4 +67,67 @@ class AuthenticationProvider extends ChangeNotifier {
       print(e);
     }
   }
+
+  Future<void> updateEmail(String newEmail) async {
+    try {
+      user.email = newEmail;
+      await _auth.currentUser!.updateEmail(
+          newEmail); //esta deprecado para por motivos academicos, se deja asi, ya que no es posible actualiarzlo luego de verificar el numero, ya que no se ingresa siempre con correos reales
+      await _databaseService.updateUserData(user);
+      logOut();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<bool> reauthenticateWithPassword(String password) async {
+    try {
+      // Re-authenticate the user with their previous password
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email,
+        password: password,
+      );
+      await _auth.currentUser!.reauthenticateWithCredential(credential);
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      // Update the password
+      await _auth.currentUser!.updatePassword(newPassword);
+    } catch (e) {
+      if (e is FirebaseAuthException) {
+        switch (e.code) {
+          //Casos de errores para mensajes personalizados
+          case 'requires-recent-login':
+            print('Error: Requiere iniciar sesión nuevamente');
+            break;
+          case 'weak-password':
+            print('Error: La contraseña es muy débil');
+            break;
+          case 'user-mismatch':
+            print('Error: Las credenciales no coinciden');
+            break;
+          case 'user-not-found':
+            print('Error: Usuario no encontrado');
+            break;
+          case 'wrong-password':
+            print('Error: Contraseña incorrecta');
+            break;
+          case 'invalid-credential':
+            print('Error: Credenciales inválidas');
+            break;
+
+          default:
+            print('Error: ${e.message}');
+        }
+      } else {
+        print("Error al actualizar la contraseña: ${e}");
+      }
+    }
+  }
 }

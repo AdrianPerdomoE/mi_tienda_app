@@ -5,7 +5,7 @@ class AppService {
   Color _primaryColor = const Color.fromRGBO(247, 200, 29, 1);
   Color _secondaryColor = const Color.fromRGBO(171, 207, 185, 1);
   Color _accentColor = const Color.fromRGBO(134, 151, 195, 1);
-  Color _backgroundColor = const Color.fromRGBO(250, 249, 245, 1);
+  Color _backgroundColor = const Color.fromRGBO(235, 234, 230, 1);
   Color _textColor = const Color.fromRGBO(13, 12, 8, 1);
 
   String get appName => _appName;

@@ -1,19 +1,20 @@
 //packages
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 
 //services
 import '../../../controllers/services/navigation_service.dart';
 import '../../../controllers/services/cloud_storage_service.dart';
-import '../../../controllers/services/media_service.dart';
 import '../../../controllers/services/user_database_service.dart';
 
 //widgets
 import '../../widgets/custom_input_fields.dart';
 import '../../widgets/rounded_button.dart';
-import '../../widgets/rounded_image.dart';
+import '../../widgets/editable_image_field.dart';
+
 //providers
 
 import '../../../controllers/providers/authentication_provider.dart';
@@ -45,9 +46,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
     _authenticationProvider = Provider.of<AuthenticationProvider>(context);
-    _databaseService = GetIt.instance<UserDatabaseService>();
-    _cloudStorageService = GetIt.instance<CloudStorageService>();
-    _navigationService = GetIt.instance<NavigationService>();
+    _databaseService = GetIt.instance.get<UserDatabaseService>();
+    _cloudStorageService = GetIt.instance.get<CloudStorageService>();
+    _navigationService = GetIt.instance.get<NavigationService>();
 
     return _buildUI();
   }
@@ -76,32 +77,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _profileImageField() {
-    return GestureDetector(
-      child: _imageWidget(),
-      onTap: () => {
-        GetIt.instance<MediaService>()
-            .pickImageFromLibrary()
-            .then((PlatformFile? image) {
-          if (image != null) {
-            setState(() {
-              _image = image;
-            });
-          }
-        })
-      },
-    );
-  }
-
-  Widget _imageWidget() {
-    if (_image != null) {
-      return RoundedImageFile(
-        file: _image!,
-        imageSize: _deviceHeight * 0.15,
-      );
-    }
-    return RoundedImageNetwork(
+    return EditableImageField(
       imagePath: 'https://picsum.photos/250?image=9',
-      imageSize: _deviceHeight * 0.15,
+      image: _image,
+      setImageFile: (image) {
+        setState(() {
+          _image = image;
+        });
+      },
     );
   }
 

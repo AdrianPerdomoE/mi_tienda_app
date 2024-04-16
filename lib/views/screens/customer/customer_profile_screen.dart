@@ -1,14 +1,23 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+
 import 'package:mi_tienda_app/models/store_user.dart';
 import 'package:provider/provider.dart';
 
 //services
+import '../../../controllers/services/cloud_storage_service.dart';
 import '../../../controllers/services/user_database_service.dart';
 //providers
 import '../../../controllers/providers/authentication_provider.dart';
 //widgets
-import '../../widgets/rounded_image.dart';
+import '../../widgets/editable_image_field.dart';
+import '../../widgets/stlyed_elevated_button.dart';
+import '../../widgets/section_togglable_field.dart';
+import '../shared/update_credentials_dialog.dart';
+import '../shared/re_authenticate_with_password.dart';
 
 class CustomerProfileScreen extends StatefulWidget {
   const CustomerProfileScreen({super.key});
@@ -20,11 +29,14 @@ class CustomerProfileScreen extends StatefulWidget {
 class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   late UserDatabaseService _userDatabaseService;
   late AuthenticationProvider _authProvider;
+  late CloudStorageService _cloudStorageService;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController maxAmountController = TextEditingController();
+
+  PlatformFile? _image;
 
   bool isEditingPersonalData = false;
   bool isEditingContactInfo = false;
@@ -33,7 +45,9 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   @override
   Widget build(BuildContext context) {
     _userDatabaseService = GetIt.instance.get<UserDatabaseService>();
+    _cloudStorageService = GetIt.instance.get<CloudStorageService>();
     _authProvider = context.read<AuthenticationProvider>();
+
     return StreamBuilder(
       stream: _userDatabaseService.getStreamUser(_authProvider.user.id),
       builder: (context, snapshot) {
@@ -52,10 +66,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
       padding: const EdgeInsets.only(bottom: 40, top: 10),
       child: ListView(
         children: [
-          RoundedImageNetwork(
-            imagePath: customer.imageUrl,
-            imageSize: 100,
-          ),
+          _buildProfileImage(customer),
           _buildPersonalDataSection(customer),
           const Divider(),
           _buildContactInfoSection(customer),
@@ -63,7 +74,60 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
           _buildShippingInfoSection(customer),
           const Divider(),
           _buildCreditInfo(customer),
-          const StyledElevatedButton(label: 'Cambiar contraseña'),
+          _buildUpdateCredentialsButton()
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfileImage(Customer customer) {
+    return Column(
+      children: [
+        EditableImageField(
+          imagePath: customer.imageUrl,
+          image: _image,
+          setImageFile: (image) {
+            setState(() {
+              _image = image;
+            });
+          },
+        ),
+        if (_image != null)
+          StyledElevatedButton(
+            label: 'Actualizar imagen',
+            onPressed: () async {
+              String? newImageUrl = await _cloudStorageService
+                  .saveUserImageToStorage(customer.id, _image!);
+              if (newImageUrl != null) {
+                customer.imageUrl = newImageUrl;
+                await _userDatabaseService.updateUserData(customer);
+                setState(() {
+                  _image = null;
+                });
+              }
+            },
+          )
+      ],
+    );
+  }
+
+  Widget _buildUpdateCredentialsButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          StyledElevatedButton(
+              label: 'Cambiar Correo',
+              onPressed: () {
+                deployUpdateEmailDialog(context);
+              }),
+          StyledElevatedButton(
+              label: 'Cambiar contraseña',
+              onPressed: () {
+                deployUpdatePasswordDialog(context);
+              }),
         ],
       ),
     );
@@ -74,6 +138,40 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
     customer.address = addressController.text;
     customer.maxCredit = double.parse(maxAmountController.text);
     _userDatabaseService.updateUserData(customer);
+  }
+
+  void deployUpdateEmailDialog(BuildContext context) async {
+    bool authenticated = await reAuthenticateWithPassword(context);
+    if (!authenticated) return;
+    showDialog(
+        context: context,
+        builder: (context) => UpdateCredentialsDialog(
+              title: 'Cambiar correo electrónico',
+              obscureText: false,
+              regex: r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+              label: 'Correo electrónico',
+              confirmationRequired: true,
+              onUpdate: ({required newValue}) {
+                _authProvider.updateEmail(newValue);
+              },
+            ));
+  }
+
+  void deployUpdatePasswordDialog(BuildContext context) async {
+    bool authenticated = await reAuthenticateWithPassword(context);
+    if (!authenticated) return;
+    showDialog(
+      context: context,
+      builder: (context) => UpdateCredentialsDialog(
+          title: 'Cambiar contraseña',
+          obscureText: true,
+          regex: r".{8,}",
+          label: 'Contraseña',
+          confirmationRequired: true,
+          onUpdate: ({required newValue}) {
+            _authProvider.updatePassword(newValue);
+          }),
+    );
   }
 
   Widget _buildPersonalDataSection(Customer customer) {
@@ -147,116 +245,5 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
         controller: maxAmountController,
       )
     ]);
-  }
-}
-
-class Section extends StatefulWidget {
-  final String title;
-  final List<Widget> children;
-  final Function? onPressed;
-  final bool? isEditing;
-  final Function? update;
-  const Section(
-      {super.key,
-      required this.title,
-      required this.children,
-      this.onPressed,
-      this.isEditing,
-      this.update});
-
-  @override
-  State<Section> createState() => _SectionState();
-}
-
-class _SectionState extends State<Section> {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          tileColor: null,
-          title: Text(
-            widget.title,
-          ),
-          trailing: widget.isEditing != null
-              ? ElevatedButton(
-                  onPressed: widget.onPressed == null
-                      ? () {}
-                      : () {
-                          if (widget.isEditing!) {
-                            widget.update!();
-                          }
-                          widget.onPressed!();
-                        },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                  ),
-                  child: Text(
-                    widget.isEditing! ? 'Guardar' : 'Editar',
-                    style: const TextStyle(fontSize: 12),
-                  ))
-              : null,
-        ),
-        ...widget.children
-      ],
-    );
-  }
-}
-
-class StyledElevatedButton extends StatelessWidget {
-  final String label;
-  const StyledElevatedButton({super.key, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          fixedSize: const Size(200, 40),
-        ),
-        child: Text(label),
-      ),
-    );
-  }
-}
-
-class TogglableField extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData icon;
-  final TextEditingController controller;
-  final bool? isEditing;
-
-  const TogglableField(
-      {super.key,
-      required this.label,
-      required this.value,
-      required this.icon,
-      required this.controller,
-      this.isEditing});
-
-  @override
-  Widget build(BuildContext context) {
-    controller.text = value;
-    return ListTile(
-      tileColor: null,
-      leading: Icon(icon),
-      title: Text(
-        label,
-      ),
-      subtitle: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: value,
-        ),
-        enabled: isEditing ?? false,
-      ),
-    );
   }
 }
