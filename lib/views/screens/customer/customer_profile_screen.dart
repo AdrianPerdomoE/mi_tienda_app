@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -140,38 +138,40 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
     _userDatabaseService.updateUserData(customer);
   }
 
-  void deployUpdateEmailDialog(BuildContext context) async {
-    bool authenticated = await reAuthenticateWithPassword(context);
-    if (!authenticated) return;
-    showDialog(
-        context: context,
-        builder: (context) => UpdateCredentialsDialog(
-              title: 'Cambiar correo electrónico',
-              obscureText: false,
-              regex: r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
-              label: 'Correo electrónico',
-              confirmationRequired: true,
-              onUpdate: ({required newValue}) {
-                _authProvider.updateEmail(newValue);
-              },
-            ));
+  void deployUpdateEmailDialog(BuildContext context) {
+    reAuthenticateWithPassword(context).then((authenticated) {
+      if (!authenticated) return;
+      showDialog(
+          context: context,
+          builder: (context) => UpdateCredentialsDialog(
+                title: 'Cambiar correo electrónico',
+                obscureText: false,
+                regex: r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+                label: 'Correo electrónico',
+                confirmationRequired: true,
+                onUpdate: ({required newValue}) {
+                  _authProvider.updateEmail(newValue);
+                },
+              ));
+    });
   }
 
-  void deployUpdatePasswordDialog(BuildContext context) async {
-    bool authenticated = await reAuthenticateWithPassword(context);
-    if (!authenticated) return;
-    showDialog(
-      context: context,
-      builder: (context) => UpdateCredentialsDialog(
-          title: 'Cambiar contraseña',
-          obscureText: true,
-          regex: r".{8,}",
-          label: 'Contraseña',
-          confirmationRequired: true,
-          onUpdate: ({required newValue}) {
-            _authProvider.updatePassword(newValue);
-          }),
-    );
+  void deployUpdatePasswordDialog(BuildContext context) {
+    reAuthenticateWithPassword(context).then((authenticated) {
+      if (!authenticated) return;
+      showDialog(
+        context: context,
+        builder: (context) => UpdateCredentialsDialog(
+            title: 'Cambiar contraseña',
+            obscureText: true,
+            regex: r".{8,}",
+            label: 'Contraseña',
+            confirmationRequired: true,
+            onUpdate: ({required newValue}) {
+              _authProvider.updatePassword(newValue);
+            }),
+      );
+    });
   }
 
   Widget _buildPersonalDataSection(Customer customer) {

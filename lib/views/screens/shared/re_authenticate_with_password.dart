@@ -40,13 +40,13 @@ Future<bool> reAuthenticateWithPassword(BuildContext context) async {
         ),
         actions: <Widget>[
           TextButton(
-            child: Text('Cancel'),
+            child: const Text('Cancelar'),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: Text('Submit'),
+            child: const Text('Autenticar'),
             onPressed: () {
               password = passwordController.text;
               Navigator.of(context).pop();
