@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mi_tienda_app/controllers/services/notification_service.dart';
 import 'package:provider/provider.dart';
 //Widgets
 import '../../widgets/custom_input_fields.dart';
@@ -8,6 +9,7 @@ import '../../widgets/rounded_button.dart';
 import '../../../controllers/providers/authentication_provider.dart';
 //services
 import '../../../controllers/services/navigation_service.dart';
+import 'package:mi_tienda_app/controllers/services/app_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,7 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
   String? email;
   String? password;
   late AuthenticationProvider _auth;
+  final AppService _appService = AppService();
   late NavigationService _navigationService;
+  late NotificationService _notificationService;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _deviceWidth = MediaQuery.of(context).size.width;
     _auth = context.read<AuthenticationProvider>();
     _navigationService = GetIt.instance.get<NavigationService>();
-
+    _notificationService = NotificationService(context: context);
     return _buildUI();
   }
 
@@ -67,10 +71,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _pageTitle() {
     return SizedBox(
       height: _deviceHeight * 0.1,
-      child: const Text(
-        "Mi tienda APP",
+      child: Text(
+        _appService.appName,
         style: TextStyle(
-          color: Colors.white,
+          color: _appService.textColor,
           fontSize: 40,
           fontWeight: FontWeight.w600,
         ),
@@ -120,7 +124,17 @@ class _LoginScreenState extends State<LoginScreen> {
       onPressed: () {
         if (_loginFormKey.currentState!.validate()) {
           _loginFormKey.currentState!.save();
-          _auth.loginUsingEmailAndPassword(email: email!, password: password!);
+          _auth
+              .loginUsingEmailAndPassword(email: email!, password: password!)
+              .then((value) {
+            if (value) {
+              _notificationService.showNotificationBottom(
+                  "Inicio de sesión satisfactorio.", NotificationType.success);
+            } else {
+              _notificationService.showNotificationBottom(
+                  "No se pudo iniciar sesión.", NotificationType.error);
+            }
+          });
         }
       },
     );
@@ -131,10 +145,10 @@ class _LoginScreenState extends State<LoginScreen> {
       onTap: () {
         _navigationService.navigateToRoute('/register');
       },
-      child: const Text(
+      child: Text(
         "Don't have an account? Register here!",
         style: TextStyle(
-          color: Colors.blueAccent,
+          color: _appService.accentColor,
         ),
       ),
     );

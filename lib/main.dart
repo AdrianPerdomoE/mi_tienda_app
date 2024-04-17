@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mi_tienda_app/controllers/services/app_service.dart';
 
 import 'package:provider/provider.dart';
 //screens
@@ -34,6 +35,8 @@ class MainApp extends StatelessWidget {
 }
 
 MaterialApp _buildMaterialApp(BuildContext context) {
+  final AppService appService = AppService();
+
   return MaterialApp(
     navigatorKey: NavigationService.navigatorKey,
     routes: {
@@ -47,13 +50,39 @@ MaterialApp _buildMaterialApp(BuildContext context) {
     },
     initialRoute: '/',
     debugShowCheckedModeBanner: false,
-    title: "Mi tienda App",
+    title: appService.appName,
     theme: ThemeData(
-      colorScheme:
-          ColorScheme.fromSeed(seedColor: const Color.fromRGBO(36, 35, 49, 1)),
-      scaffoldBackgroundColor: const Color.fromRGBO(36, 35, 49, 1),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: Color.fromRGBO(30, 29, 37, 1),
+      appBarTheme: AppBarTheme(
+        backgroundColor: appService.primaryColor,
+        titleTextStyle: TextStyle(
+          color: appService.backgroundColor,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        iconTheme: IconThemeData(color: appService.backgroundColor),
+      ),
+      colorScheme: ColorScheme.fromSeed(
+        primary: appService.primaryColor,
+        seedColor: appService.primaryColor,
+        secondary: appService.secondaryColor,
+        tertiary: appService.accentColor,
+        background: appService.backgroundColor,
+      ),
+      scaffoldBackgroundColor: appService.backgroundColor,
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: appService.primaryColor,
+        selectedItemColor: appService.backgroundColor,
+        unselectedItemColor: appService.backgroundColor,
+        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+        elevation: 100,
+      ),
+      buttonTheme: ButtonThemeData(
+        buttonColor: appService.primaryColor,
+        textTheme: ButtonTextTheme.primary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
       ),
     ),
   );

@@ -21,31 +21,36 @@ class IUser {
     required this.imageUrl,
   });
   IUser.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        email = json['email'],
-        name = json['name'],
-        role = json['role'],
-        imageUrl = json['image'],
-        creationDate = json['creationDate'];
+      : id = json['id'] ?? '',
+        email = json['email'] ?? '',
+        name = json['name'] ?? '',
+        role = json['role'] ?? '',
+        imageUrl = json['image'] ?? '',
+        creationDate = json['creationDate'] ?? Timestamp.now();
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'email': email,
+      'name': name,
+      'role': role,
+      'image': imageUrl,
+      'creationDate': creationDate,
+    };
+  }
 }
 
 class Admin extends IUser {
   Admin({
-    required String id,
-    required String email,
-    required String name,
-    required Timestamp creationDate,
-    required String imageUrl,
+    required super.id,
+    required super.email,
+    required super.name,
+    required super.creationDate,
+    required super.imageUrl,
   }) : super(
-          id: id,
-          email: email,
-          name: name,
           role: admin,
-          creationDate: creationDate,
-          imageUrl: imageUrl,
         );
 
-  Admin.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  Admin.fromJson(super.json) : super.fromJson();
 }
 
 class Customer extends IUser {
@@ -55,26 +60,30 @@ class Customer extends IUser {
   double maxCredit;
 
   Customer({
-    required String id,
-    required String email,
-    required String name,
-    required Timestamp creationDate,
+    required super.id,
+    required super.email,
+    required super.name,
+    required super.creationDate,
     required this.address,
     required this.cart,
     required this.maxCredit,
-    required String imageUrl,
+    required super.imageUrl,
   }) : super(
-          id: id,
-          email: email,
-          name: name,
           role: customer,
-          creationDate: creationDate,
-          imageUrl: imageUrl,
         );
 
-  Customer.fromJson(Map<String, dynamic> json)
-      : address = json['address'],
-        maxCredit = json['maxCredit'],
-        cart = Cart.fromJson(json['cart']),
-        super.fromJson(json);
+  Customer.fromJson(super.json)
+      : address = json['address'] ?? '',
+        maxCredit = json['maxCredit'] ?? 0.0,
+        cart = Cart.fromJson(json['cart'] ?? {}),
+        super.fromJson();
+  @override
+  toJson() {
+    return {
+      'cart': cart.toJson(),
+      'maxCredit': maxCredit,
+      'address': address,
+      ...super.toJson()
+    };
+  }
 }

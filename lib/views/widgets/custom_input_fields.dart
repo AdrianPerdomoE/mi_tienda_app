@@ -6,11 +6,13 @@ class CustomTextFormField extends StatelessWidget {
   final String hintText;
   final bool obscureText;
 
-  CustomTextFormField(
-      {required this.onSaved,
-      required this.regex,
-      required this.hintText,
-      required this.obscureText});
+  const CustomTextFormField({
+    super.key,
+    required this.onSaved,
+    required this.regex,
+    required this.hintText,
+    required this.obscureText,
+  });
   @override
   Widget build(BuildContext context) {
     return TextFormField(

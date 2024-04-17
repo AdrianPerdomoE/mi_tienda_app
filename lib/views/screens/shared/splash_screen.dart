@@ -3,6 +3,7 @@
 import "package:firebase_core/firebase_core.dart";
 import "package:flutter/material.dart";
 import "package:get_it/get_it.dart";
+import "package:mi_tienda_app/controllers/services/app_service.dart";
 
 import "../../../controllers/services/cloud_storage_service.dart";
 import '../../../controllers/services/user_database_service.dart';
@@ -35,15 +36,19 @@ class _SplashScreenState extends State<SplashScreen> {
 // En el estado si quiero acceder a una propiedad o funcion de la clase padre, debo usar widget.variable
   @override
   Widget build(BuildContext context) {
+    final AppService appService = AppService();
+
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Mi tienda App",
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color.fromRGBO(36, 35, 49, 1)),
-          scaffoldBackgroundColor: const Color.fromRGBO(36, 35, 49, 1)),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: appService.primaryColor,
+        ),
+        scaffoldBackgroundColor: appService.backgroundColor,
+      ),
       home: Scaffold(
         body: Center(
           child: Container(
