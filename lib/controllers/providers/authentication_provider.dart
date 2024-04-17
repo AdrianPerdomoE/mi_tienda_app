@@ -34,15 +34,15 @@ class AuthenticationProvider extends ChangeNotifier {
       }
     });
   }
-  Future<void> loginUsingEmailAndPassword(
+  Future<bool> loginUsingEmailAndPassword(
       {required String email, required String password}) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      print("User logged in");
-    } on FirebaseAuthException catch (e) {
-      print("Error loggin user in: ${e.message}");
+      return true;
+    } on FirebaseAuthException {
+      return false;
     } catch (e) {
-      print(e);
+      return false;
     }
   }
 
@@ -53,11 +53,10 @@ class AuthenticationProvider extends ChangeNotifier {
           email: email, password: password);
       return credentials.user!.uid;
     } on FirebaseAuthException {
-      print('Error registering user');
+      return null;
     } catch (e) {
-      print("Error registering user: ${e}");
+      return null;
     }
-    return null;
   }
 
   Future<void> logOut() async {

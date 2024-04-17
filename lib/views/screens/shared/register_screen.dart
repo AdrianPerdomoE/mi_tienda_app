@@ -1,6 +1,7 @@
 //packages
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mi_tienda_app/controllers/services/notification_service.dart';
 
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
@@ -41,6 +42,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late UserDatabaseService _databaseService;
   late CloudStorageService _cloudStorageService;
   late NavigationService _navigationService;
+  late NotificationService _notificationService;
+
   @override
   Widget build(BuildContext context) {
     _deviceHeight = MediaQuery.of(context).size.height;
@@ -49,6 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _databaseService = GetIt.instance.get<UserDatabaseService>();
     _cloudStorageService = GetIt.instance.get<CloudStorageService>();
     _navigationService = GetIt.instance.get<NavigationService>();
+    _notificationService = NotificationService(context: context);
 
     return _buildUI();
   }
@@ -150,7 +154,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         onPressed: () async {
           if (formKey.currentState!.validate()) {
             if (_image == null) {
-              _showMessage('Please select a profile image.');
+              _notificationService.showNotificationBottom(
+                  'Por favor selecciona una imagen', NotificationType.warning);
               return;
             }
             formKey.currentState!.save();
@@ -158,30 +163,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 await _authenticationProvider.registerUsingEmailAndPassword(
                     email: email!, password: password!);
             if (uid == null) {
-              _showMessage('Hubo un error al registrar el usuario');
+              _notificationService.showNotificationBottom(
+                  'Hubo un error al registrar el usuario',
+                  NotificationType.error);
               return;
             }
             String? imageUrl =
                 await _cloudStorageService.saveUserImageToStorage(uid, _image!);
             if (imageUrl == null) {
-              _showMessage('Hubo un error al registrar la imagen');
+              _notificationService.showNotificationBottom(
+                  'Hubo un error al registrar la imagen',
+                  NotificationType.error);
               imageUrl = "";
             }
             _databaseService.createCustomer(
                 uid, name!, email!, imageUrl, address!);
-            print('Usuario registrado');
-            Future.delayed(const Duration(seconds: 1), () {
-              _navigationService.removeAndNavigateToRoute('/login');
-            });
+            _notificationService.showNotificationBottom(
+                'Usuario registrado correctamente', NotificationType.success);
+            _navigationService.removeAndNavigateToRoute('/login');
           }
         });
-  }
-
-  _showMessage(String text) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(text),
-      ),
-    );
   }
 }
