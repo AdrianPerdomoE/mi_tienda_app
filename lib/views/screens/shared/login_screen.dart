@@ -9,7 +9,7 @@ import '../../widgets/rounded_button.dart';
 import '../../../controllers/providers/authentication_provider.dart';
 //services
 import '../../../controllers/services/navigation_service.dart';
-import 'package:mi_tienda_app/controllers/services/app_service.dart';
+import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? email;
   String? password;
   late AuthenticationProvider _auth;
-  final AppService _appService = AppService();
+  final AppDataProvider _appService = AppDataProvider();
   late NavigationService _navigationService;
   late NotificationService _notificationService;
 

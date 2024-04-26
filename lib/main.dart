@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mi_tienda_app/controllers/services/app_service.dart';
-
+import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
+import "package:firebase_core/firebase_core.dart";
 import 'package:provider/provider.dart';
 //screens
 import 'views/screens/customer/customer_home_screen.dart';
@@ -16,7 +16,8 @@ import './controllers/services/navigation_service.dart';
 import './controllers/providers/authentication_provider.dart';
 
 void main() {
-  runApp(const MainApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp().then((value) => runApp(const MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -27,16 +28,19 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthenticationProvider>(
-            create: (context) => AuthenticationProvider())
+            create: (context) => AuthenticationProvider()),
+        ChangeNotifierProvider<AppDataProvider>(
+            create: (context) => AppDataProvider()),
       ],
-      child: _buildMaterialApp(context),
+      child: Builder(
+        builder: (context) => _buildMaterialApp(context),
+      ),
     );
   }
 }
 
 MaterialApp _buildMaterialApp(BuildContext context) {
-  final AppService appService = AppService();
-
+  AppDataProvider appDataProvider = context.watch<AppDataProvider>();
   return MaterialApp(
     navigatorKey: NavigationService.navigatorKey,
     routes: {
@@ -50,35 +54,35 @@ MaterialApp _buildMaterialApp(BuildContext context) {
     },
     initialRoute: '/',
     debugShowCheckedModeBanner: false,
-    title: appService.appName,
+    title: appDataProvider.appName,
     theme: ThemeData(
       appBarTheme: AppBarTheme(
-        backgroundColor: appService.primaryColor,
+        backgroundColor: appDataProvider.primaryColor,
         titleTextStyle: TextStyle(
-          color: appService.backgroundColor,
+          color: appDataProvider.backgroundColor,
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
-        iconTheme: IconThemeData(color: appService.backgroundColor),
+        iconTheme: IconThemeData(color: appDataProvider.backgroundColor),
       ),
       colorScheme: ColorScheme.fromSeed(
-        primary: appService.primaryColor,
-        seedColor: appService.primaryColor,
-        secondary: appService.secondaryColor,
-        tertiary: appService.accentColor,
-        background: appService.backgroundColor,
+        primary: appDataProvider.primaryColor,
+        seedColor: appDataProvider.primaryColor,
+        secondary: appDataProvider.secondaryColor,
+        tertiary: appDataProvider.accentColor,
+        background: appDataProvider.backgroundColor,
       ),
-      scaffoldBackgroundColor: appService.backgroundColor,
+      scaffoldBackgroundColor: appDataProvider.backgroundColor,
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: appService.primaryColor,
-        selectedItemColor: appService.backgroundColor,
-        unselectedItemColor: appService.backgroundColor,
+        backgroundColor: appDataProvider.primaryColor,
+        selectedItemColor: appDataProvider.backgroundColor,
+        unselectedItemColor: appDataProvider.backgroundColor,
         unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
         elevation: 100,
       ),
       buttonTheme: ButtonThemeData(
-        buttonColor: appService.primaryColor,
+        buttonColor: appDataProvider.primaryColor,
         textTheme: ButtonTextTheme.primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),

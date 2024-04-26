@@ -1,9 +1,10 @@
 //packages
 
-import "package:firebase_core/firebase_core.dart";
+import 'package:provider/provider.dart';
+
 import "package:flutter/material.dart";
 import "package:get_it/get_it.dart";
-import "package:mi_tienda_app/controllers/services/app_service.dart";
+import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 
 import "../../../controllers/services/cloud_storage_service.dart";
 import '../../../controllers/services/user_database_service.dart';
@@ -23,6 +24,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  late AppDataProvider appDataProvider;
   @override
   void initState() {
     super.initState();
@@ -36,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
 // En el estado si quiero acceder a una propiedad o funcion de la clase padre, debo usar widget.variable
   @override
   Widget build(BuildContext context) {
-    final AppService appService = AppService();
+    appDataProvider = context.watch<AppDataProvider>();
 
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
@@ -45,9 +47,9 @@ class _SplashScreenState extends State<SplashScreen> {
       title: "Mi tienda App",
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: appService.primaryColor,
+          seedColor: appDataProvider.primaryColor,
         ),
-        scaffoldBackgroundColor: appService.backgroundColor,
+        scaffoldBackgroundColor: appDataProvider.backgroundColor,
       ),
       home: Scaffold(
         body: Center(
@@ -69,17 +71,23 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _setUp() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
     _registerServices();
   }
 
   void _registerServices() {
-    GetIt.instance.registerSingleton<NavigationService>(NavigationService());
-    GetIt.instance.registerSingleton<MediaService>(MediaService());
-    GetIt.instance
-        .registerSingleton<CloudStorageService>(CloudStorageService());
-    GetIt.instance
-        .registerSingleton<UserDatabaseService>(UserDatabaseService());
+    if (!GetIt.instance.isRegistered<NavigationService>()) {
+      GetIt.instance.registerSingleton<NavigationService>(NavigationService());
+    }
+    if (!GetIt.instance.isRegistered<MediaService>()) {
+      GetIt.instance.registerSingleton<MediaService>(MediaService());
+    }
+    if (!GetIt.instance.isRegistered<CloudStorageService>()) {
+      GetIt.instance
+          .registerSingleton<CloudStorageService>(CloudStorageService());
+    }
+    if (!GetIt.instance.isRegistered<UserDatabaseService>()) {
+      GetIt.instance
+          .registerSingleton<UserDatabaseService>(UserDatabaseService());
+    }
   }
 }
