@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 import "package:firebase_core/firebase_core.dart";
+import 'package:mi_tienda_app/controllers/providers/loading_provider.dart';
 import 'package:provider/provider.dart';
 //screens
 import 'views/screens/customer/customer_home_screen.dart';
@@ -31,6 +32,8 @@ class MainApp extends StatelessWidget {
             create: (context) => AuthenticationProvider()),
         ChangeNotifierProvider<AppDataProvider>(
             create: (context) => AppDataProvider()),
+        ChangeNotifierProvider<LoadingProvider>(
+            create: (context) => LoadingProvider()),
       ],
       child: Builder(
         builder: (context) => _buildMaterialApp(context),
@@ -41,6 +44,9 @@ class MainApp extends StatelessWidget {
 
 MaterialApp _buildMaterialApp(BuildContext context) {
   AppDataProvider appDataProvider = context.watch<AppDataProvider>();
+  ValueNotifier<bool> isLoading = context.watch<LoadingProvider>().isLoading;
+  double width = MediaQuery.of(context).size.width;
+  double height = MediaQuery.of(context).size.height;
   return MaterialApp(
     navigatorKey: NavigationService.navigatorKey,
     routes: {
@@ -89,5 +95,30 @@ MaterialApp _buildMaterialApp(BuildContext context) {
         ),
       ),
     ),
+    builder: (context, child) {
+      return Stack(
+        children: [
+          child!,
+          ValueListenableBuilder<bool>(
+            valueListenable: isLoading,
+            builder: (context, value, child) {
+              if (value) {
+                return Container(
+                    color: Colors.black.withOpacity(0.5),
+                    width: width,
+                    height: height,
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      color: appDataProvider.accentColor,
+                    )));
+              } else {
+                return const SizedBox
+                    .shrink(); // return an empty widget when not loading
+              }
+            },
+          ),
+        ],
+      );
+    },
   );
 }
