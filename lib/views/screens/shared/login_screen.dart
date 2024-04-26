@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _deviceWidth = MediaQuery.of(context).size.width;
     _auth = context.read<AuthenticationProvider>();
     _navigationService = GetIt.instance.get<NavigationService>();
-    _notificationService = NotificationService(context: context);
+    _notificationService = NotificationService();
     return _buildUI();
   }
 
@@ -128,10 +128,10 @@ class _LoginScreenState extends State<LoginScreen> {
               .loginUsingEmailAndPassword(email: email!, password: password!)
               .then((value) {
             if (value) {
-              _notificationService.showNotificationBottom(
+              _notificationService.showNotificationBottom(context,
                   "Inicio de sesión satisfactorio.", NotificationType.success);
             } else {
-              _notificationService.showNotificationBottom(
+              _notificationService.showNotificationBottom(context,
                   "No se pudo iniciar sesión.", NotificationType.error);
             }
           });

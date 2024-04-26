@@ -1,4 +1,6 @@
 //packages
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/services/notification_service.dart';
@@ -52,7 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _databaseService = GetIt.instance.get<UserDatabaseService>();
     _cloudStorageService = GetIt.instance.get<CloudStorageService>();
     _navigationService = GetIt.instance.get<NavigationService>();
-    _notificationService = NotificationService(context: context);
+    _notificationService = NotificationService();
 
     return _buildUI();
   }
@@ -154,7 +156,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         onPressed: () async {
           if (formKey.currentState!.validate()) {
             if (_image == null) {
-              _notificationService.showNotificationBottom(
+              _notificationService.showNotificationBottom(context,
                   'Por favor selecciona una imagen', NotificationType.warning);
               return;
             }
@@ -164,6 +166,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     email: email!, password: password!);
             if (uid == null) {
               _notificationService.showNotificationBottom(
+                  context,
                   'Hubo un error al registrar el usuario',
                   NotificationType.error);
               return;
@@ -172,13 +175,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 await _cloudStorageService.saveUserImageToStorage(uid, _image!);
             if (imageUrl == null) {
               _notificationService.showNotificationBottom(
+                  context,
                   'Hubo un error al registrar la imagen',
                   NotificationType.error);
               imageUrl = "";
             }
             _databaseService.createCustomer(
                 uid, name!, email!, imageUrl, address!);
-            _notificationService.showNotificationBottom(
+            _notificationService.showNotificationBottom(context,
                 'Usuario registrado correctamente', NotificationType.success);
             _navigationService.removeAndNavigateToRoute('/login');
           }

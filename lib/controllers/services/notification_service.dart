@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 enum NotificationType { success, warning, error, info }
 
 class NotificationService {
-  BuildContext context;
-
-  NotificationService({required this.context});
-
-  void showNotificationBottom(String message, NotificationType type) {
+  void showNotificationBottom(
+      BuildContext context, String message, NotificationType type) {
     Color bgColor;
 
     switch (type) {
@@ -24,8 +21,8 @@ class NotificationService {
         bgColor = Colors.blue;
         break;
     }
-
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessengerState messanger = ScaffoldMessenger.of(context);
+    messanger.showSnackBar(
       SnackBar(
         content: Text(
           message,
@@ -39,7 +36,7 @@ class NotificationService {
           label: 'Cerrar',
           textColor: Colors.white,
           onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            messanger.hideCurrentSnackBar();
           },
         ),
       ),
