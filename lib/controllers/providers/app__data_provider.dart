@@ -59,21 +59,18 @@ class AppDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeAppName(String name) {
-    _appName = name;
+  void changeAppData(String name, String address) {
+    _realTimeDb.ref().child('app').update({
+      'data/name': name,
+      'data/address': address,
+    });
   }
 
   void changeTheme(
-    Color primaryColor,
-    Color secondaryColor,
-    Color accentColor,
-    Color backgroundColor,
-    Color textColor,
+    int themeIndex,
   ) {
-    _primaryColor = primaryColor;
-    _secondaryColor = secondaryColor;
-    _accentColor = accentColor;
-    _backgroundColor = backgroundColor;
-    _textColor = textColor;
+    _realTimeDb.ref().child('app').update({
+      'data/theme': themeIndex,
+    });
   }
 }

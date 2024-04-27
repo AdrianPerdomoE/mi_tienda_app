@@ -23,10 +23,25 @@ class CloudStorageService {
   }
 
   Future<String?> saveProductImageToStorage(
-      String chatID, String userID, PlatformFile image) async {
+      String productId, String productName, PlatformFile image) async {
     try {
       Reference reference = _storage.ref().child(
-          'images/chats/$chatID/${userID}_${Timestamp.now().millisecondsSinceEpoch}.${image.extension}');
+          'images/products/$productId/${productName}_${Timestamp.now().millisecondsSinceEpoch}.${image.extension}');
+      UploadTask task = reference.putFile(File(image.path!));
+      return await task.then((result) {
+        return result.ref.getDownloadURL();
+      });
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<String?> saveDistributorImageToStorage(
+      String distributorID, PlatformFile image) async {
+    try {
+      Reference reference = _storage.ref().child(
+          'images/distributors/$distributorID/profile.${image.extension}');
       UploadTask task = reference.putFile(File(image.path!));
       return await task.then((result) {
         return result.ref.getDownloadURL();
