@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mi_tienda_app/controllers/providers/loading_provider.dart';
 import 'package:mi_tienda_app/controllers/services/notification_service.dart';
 import 'package:provider/provider.dart';
 //Widgets
@@ -24,16 +25,18 @@ class _LoginScreenState extends State<LoginScreen> {
   String? email;
   String? password;
   late AuthenticationProvider _auth;
-  final AppDataProvider _appService = AppDataProvider();
+  late AppDataProvider _appDataProvider;
   late NavigationService _navigationService;
   late NotificationService _notificationService;
-
+  late LoadingProvider _loadingProvider;
   @override
   Widget build(BuildContext context) {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
-    _auth = context.read<AuthenticationProvider>();
+    _auth = context.watch<AuthenticationProvider>();
+    _appDataProvider = context.watch<AppDataProvider>();
     _navigationService = GetIt.instance.get<NavigationService>();
+    _loadingProvider = context.watch<LoadingProvider>();
     _notificationService = NotificationService();
     return _buildUI();
   }
@@ -72,9 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return SizedBox(
       height: _deviceHeight * 0.1,
       child: Text(
-        _appService.appName,
+        _appDataProvider.appName,
         style: TextStyle(
-          color: _appService.textColor,
+          color: _appDataProvider.textColor,
           fontSize: 40,
           fontWeight: FontWeight.w600,
         ),
@@ -124,6 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
       onPressed: () {
         if (_loginFormKey.currentState!.validate()) {
           _loginFormKey.currentState!.save();
+          _loadingProvider.setLoading(true);
           _auth
               .loginUsingEmailAndPassword(email: email!, password: password!)
               .then((value) {
@@ -134,6 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
               _notificationService.showNotificationBottom(context,
                   "No se pudo iniciar sesión.", NotificationType.error);
             }
+            _loadingProvider.setLoading(false);
           });
         }
       },
@@ -148,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Text(
         "Don't have an account? Register here!",
         style: TextStyle(
-          color: _appService.accentColor,
+          color: _appDataProvider.accentColor,
         ),
       ),
     );
