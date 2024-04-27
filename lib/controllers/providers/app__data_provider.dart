@@ -56,6 +56,7 @@ class AppDataProvider extends ChangeNotifier {
     _accentColor = themes[_curretTheme].accent;
     _backgroundColor = themes[_curretTheme].background;
     _textColor = themes[_curretTheme].text;
+    _themes = themes;
     notifyListeners();
   }
 

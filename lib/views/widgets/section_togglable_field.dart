@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Section extends StatefulWidget {
   final String title;
-  final List<TogglableField> children;
+  final List<Widget> children;
   final Function? onPressed;
   final bool? isEditing;
   final Function? update;
