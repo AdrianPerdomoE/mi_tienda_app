@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
+import 'package:mi_tienda_app/views/screens/customer/customer_products_screen.dart';
 import 'customer_profile_screen.dart';
 import 'package:provider/provider.dart';
 //widgets
@@ -16,10 +17,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   late AppDataProvider appDataProvider;
   int _currentIndex = 0;
   final List<Widget> _screens = [
-    Container(
-      color: Colors.red,
-      child: const Text("Inicio"),
-    ),
+    const CustomerProductsScreen(),
     const CustomerProfileScreen(),
   ];
   @override
