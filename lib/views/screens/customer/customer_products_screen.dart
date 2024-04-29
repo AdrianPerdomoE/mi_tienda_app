@@ -59,7 +59,7 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 12,
+                  height: 8,
                 ),
                 SizedBox(
                   height: 50,
@@ -78,6 +78,7 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
                     },
                   ),
                 ),
+                const SizedBox(height: 16, child: Divider()),
               ],
             ),
             Expanded(
@@ -115,15 +116,76 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
   buildProductCard({required Product product}) {
     return Card(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Image.network(
-            product.imageUrl,
-            height: 150,
-            width: 150,
-            fit: BoxFit.cover,
+          Expanded(
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(8.0),
+                topRight: Radius.circular(8.0),
+              ),
+              child: Image.network(
+                height: 150,
+                width: double.infinity,
+                product.imageUrl,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          Text(product.name),
-          Text("\$${product.price}"),
+          Padding(
+            padding: const EdgeInsets.only(left: 10, top: 10),
+            child: Text(
+              product.name,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10, bottom: 12),
+            child: Text(
+              "\$ ${product.price.toStringAsFixed(0)}",
+              style: const TextStyle(
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10, bottom: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 0,
+                    ),
+                  ),
+                  onPressed: () {
+                    // Agregar al carrito
+                  },
+                  icon: const Icon(
+                    Icons.add_shopping_cart,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                  label: const Text(
+                    'Añadir',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -132,7 +194,7 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
   buildCategoryCard({required Category category}) {
     return Padding(
       padding: const EdgeInsets.only(right: 10),
-      child: GestureDetector(
+      child: InkWell(
         onTap: () {},
         child: Chip(
           label: Text(category.name),
