@@ -10,6 +10,7 @@ import "../../../controllers/services/cloud_storage_service.dart";
 import '../../../controllers/services/user_database_service.dart';
 import "../../../controllers/services/media_service.dart";
 import "../../../controllers/services/navigation_service.dart";
+import "package:mi_tienda_app/controllers/services/products_database_service.dart";
 
 class SplashScreen extends StatefulWidget {
   // ignore: non_constant_identifier_names
@@ -88,6 +89,10 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!GetIt.instance.isRegistered<UserDatabaseService>()) {
       GetIt.instance
           .registerSingleton<UserDatabaseService>(UserDatabaseService());
+    }
+    if (!GetIt.instance.isRegistered<ProductsDatabaseService>()) {
+      GetIt.instance.registerSingleton<ProductsDatabaseService>(
+          ProductsDatabaseService());
     }
   }
 }
