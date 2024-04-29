@@ -13,9 +13,11 @@ import 'package:mi_tienda_app/views/widgets/section_togglable_field.dart';
 import 'package:mi_tienda_app/views/widgets/star_list_generator.dart';
 import 'package:provider/provider.dart';
 
+import '../../../controllers/services/navigation_service.dart';
 import '../../widgets/confirm_delete_element_dialog.dart';
 import '../../widgets/info_removable_item.dart';
 import '../../widgets/section_add_button.dart';
+import 'distributor_info_screen.dart';
 
 class AdminProfileScreen extends StatefulWidget {
   const AdminProfileScreen({super.key});
@@ -206,7 +208,13 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                   },
                 );
               },
-              onInfo: () {},
+              onInfo: () {
+                GetIt.instance
+                    .get<NavigationService>()
+                    .navigateToPage(DistributorInfoScreen(
+                      distributor: doc,
+                    ));
+              },
             ));
           },
         );
