@@ -1,22 +1,19 @@
-import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
-import 'package:mi_tienda_app/controllers/providers/loading_provider.dart';
+
 import 'package:mi_tienda_app/controllers/services/distributor_database_service.dart';
-import 'package:mi_tienda_app/controllers/services/notification_service.dart';
+
 import 'package:mi_tienda_app/models/custom_theme.dart';
 import 'package:mi_tienda_app/models/distributor.dart';
 import 'package:mi_tienda_app/views/widgets/add_distributor_dialog.dart';
-import 'package:mi_tienda_app/views/widgets/custom_input_fields.dart';
-import 'package:mi_tienda_app/views/widgets/editable_image_field.dart';
+
 import 'package:mi_tienda_app/views/widgets/rounded_image.dart';
 import 'package:mi_tienda_app/views/widgets/section_togglable_field.dart';
 import 'package:mi_tienda_app/views/widgets/star_list_generator.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/confirm_delete_element_dialog.dart';
 import '../../widgets/info_removable_item.dart';
 import '../../widgets/section_add_button.dart';
 
@@ -196,7 +193,19 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
           (doc) {
             items.add(InfoRemovableItem(
               itemData: _buildDistributorItemData(doc),
-              onDelete: () {},
+              onDelete: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ConfirmDeleteElementDialog(
+                        content:
+                            "¿Estas seguro de eliminar al distribuidor ${doc.name}?",
+                        onDelete: () {
+                          _distributorDatabaseService.deleteDistributor(doc.id);
+                        });
+                  },
+                );
+              },
               onInfo: () {},
             ));
           },
@@ -227,4 +236,3 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
     );
   }
 }
-//TODO esta pendiende, la implementacion de la edicion de los distribuidores y la eliminacion de los mismos
