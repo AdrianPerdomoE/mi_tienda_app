@@ -140,6 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     });
                   },
                   regex: r'.{8,}',
+                  maxLines: 1,
                   hintText: "Contraseña",
                   obscureText: true),
               _registerButton()

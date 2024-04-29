@@ -111,6 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   });
                 },
                 regex: r".{8,}",
+                maxLines: 1,
                 hintText: "Password",
                 obscureText: true),
           ],

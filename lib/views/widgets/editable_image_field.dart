@@ -29,7 +29,23 @@ class _EditableImageFieldState extends State<EditableImageField> {
     _mediaService = GetIt.instance.get<MediaService>();
     _deviceHeight = MediaQuery.of(context).size.height;
     return GestureDetector(
-      child: _imageWidget(),
+      child: widget.image != null
+          ? _imageWidget()
+          : Column(
+              children: [
+                _imageWidget(),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  "La imagen es obligatoria",
+                  style: TextStyle(
+                    color: Colors.red[900],
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
       onTap: () => {
         _mediaService.pickImageFromLibrary().then((PlatformFile? image) {
           if (image != null) {

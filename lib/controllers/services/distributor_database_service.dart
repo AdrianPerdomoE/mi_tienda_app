@@ -33,8 +33,14 @@ class DistributorDatabaseService {
     }
   }
 
-  Future<bool> addDistributor(String name, String number, String email,
-      String address, String description, PlatformFile image) async {
+  Future<bool> addDistributor(
+      String name,
+      String number,
+      String email,
+      String address,
+      String description,
+      PlatformFile image,
+      int rating) async {
     var distributor = {
       "name": name,
       "imageUrl": "https://picsum.photos/200", // Placeholder image URL
@@ -43,7 +49,7 @@ class DistributorDatabaseService {
       "address": address,
       "comments": [],
       "description": description,
-      "rating": 0.0,
+      "rating": rating,
     };
     try {
       DocumentReference distributorRef =
