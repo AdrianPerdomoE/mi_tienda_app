@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/services/cloud_storage_service.dart';
+import 'package:mi_tienda_app/global/input_regex_validation.dart';
 import 'package:mi_tienda_app/views/widgets/editable_image_field.dart';
 import 'package:mi_tienda_app/views/widgets/section_togglable_field.dart';
 
@@ -104,12 +105,14 @@ class _DistributorInfoScreenState extends State<DistributorInfoScreen> {
       },
       children: [
         TogglableField(
+            validator: InputRegexValidator.validateName,
             label: "Nombre",
             value: widget.distributor.name,
             icon: Icons.person,
             controller: _name,
             isEditing: _editigPersonalData),
         TogglableField(
+          validator: InputRegexValidator.validateTextArea,
           label: "Descripcion",
           value: widget.distributor.description,
           icon: Icons.description,
@@ -139,6 +142,7 @@ class _DistributorInfoScreenState extends State<DistributorInfoScreen> {
       },
       children: [
         TogglableField(
+          validator: InputRegexValidator.validateEmail,
           label: "Email",
           value: widget.distributor.email,
           icon: Icons.email,
@@ -146,6 +150,7 @@ class _DistributorInfoScreenState extends State<DistributorInfoScreen> {
           isEditing: _editigContactData,
         ),
         TogglableField(
+          validator: InputRegexValidator.validatePhone,
           label: "Numero",
           value: widget.distributor.number,
           icon: Icons.phone,
@@ -153,6 +158,7 @@ class _DistributorInfoScreenState extends State<DistributorInfoScreen> {
           isEditing: _editigContactData,
         ),
         TogglableField(
+          validator: InputRegexValidator.validateAddress,
           label: "Direccion",
           value: widget.distributor.address,
           icon: Icons.house,
@@ -165,6 +171,4 @@ class _DistributorInfoScreenState extends State<DistributorInfoScreen> {
 }
 
 //TODO Agregar seccion de gestion del comentario para editar, borrar y agregar comentarios
-//TODO standarizar los regex de validacion de los campos de texto
-//TODO agregar propiedad de regex para validar el campo antes de guardar el cambio en los TogglableField
-//TODO Standarizar la imagen de placeholder para las imagenes sin valor y corregir error del etitableImageField
+

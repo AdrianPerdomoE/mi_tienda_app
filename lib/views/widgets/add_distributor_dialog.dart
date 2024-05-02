@@ -4,12 +4,14 @@ import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/providers/loading_provider.dart';
 import 'package:mi_tienda_app/controllers/services/distributor_database_service.dart';
 import 'package:mi_tienda_app/controllers/services/notification_service.dart';
+import 'package:mi_tienda_app/global/input_regex_validation.dart';
+import 'package:mi_tienda_app/global/placeholder_images_urls.dart';
 import 'package:mi_tienda_app/views/widgets/custom_input_fields.dart';
 import 'package:mi_tienda_app/views/widgets/editable_image_field.dart';
 import 'package:provider/provider.dart';
 
 class AddDistributorDialog extends StatefulWidget {
-  AddDistributorDialog({super.key});
+  const AddDistributorDialog({super.key});
 
   @override
   State<AddDistributorDialog> createState() => _AddDistributorDialogState();
@@ -23,11 +25,11 @@ class _AddDistributorDialogState extends State<AddDistributorDialog> {
   String _description = '';
   int _rating = 0;
 
-  DistributorDatabaseService _distributorDatabaseService =
+  final DistributorDatabaseService _distributorDatabaseService =
       GetIt.instance.get<DistributorDatabaseService>();
   late LoadingProvider _loadingProvider;
   PlatformFile? _imageFile;
-  NotificationService _notificationService =
+  final NotificationService _notificationService =
       GetIt.instance.get<NotificationService>();
   final _formKey = GlobalKey<FormState>();
 
@@ -40,7 +42,7 @@ class _AddDistributorDialogState extends State<AddDistributorDialog> {
       content: Column(
         children: [
           EditableImageField(
-            imagePath: 'https://via.placeholder.com/150',
+            imagePath: PlaceholderImagesUrls.png150Image,
             setImageFile: (image) {
               if (image != null) {
                 setState(() {
@@ -58,14 +60,14 @@ class _AddDistributorDialogState extends State<AddDistributorDialog> {
                       onSaved: (value) {
                         _name = value;
                       },
-                      regex: r'^[a-zA-Z\s]+$',
+                      validator: InputRegexValidator.validateName,
                       hintText: "Nombre",
                       obscureText: false),
                   CustomTextFormFieldPlain(
                       onSaved: (value) {
                         _phone = value;
                       },
-                      regex: r'^\d{10}$',
+                      validator: InputRegexValidator.validatePhone,
                       hintText: "Numero",
                       keyboardType: TextInputType.phone,
                       obscureText: false),
@@ -73,16 +75,16 @@ class _AddDistributorDialogState extends State<AddDistributorDialog> {
                       onSaved: (value) {
                         _email = value;
                       },
-                      regex:
-                          r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[\w-]+$', // regex for an email
+                      validator: InputRegexValidator
+                          .validateEmail, // regex for an email
                       hintText: "Email",
                       obscureText: false),
                   CustomTextFormFieldPlain(
                       onSaved: (value) {
                         _address = value;
                       },
-                      regex:
-                          r'^(calle|carrera)\s\d+[A-Za-z]?\s#\s\d+[A-Za-z]?\s?[A-Za-z0-9\s]{0,100}$', //regex para una direccion
+                      validator: InputRegexValidator
+                          .validateAddress, //regex para una direccion
                       hintText: "Dirección",
                       obscureText: false),
                   CustomTextFormFieldPlain(
@@ -90,7 +92,7 @@ class _AddDistributorDialogState extends State<AddDistributorDialog> {
                       _description =
                           value; //value is the string of the text field
                     },
-                    regex: r'^\w+(\s+\w+)*$',
+                    validator: InputRegexValidator.validateTextArea,
                     hintText: "Descripcion",
                     obscureText: false,
                     keyboardType: TextInputType.multiline,
@@ -99,7 +101,7 @@ class _AddDistributorDialogState extends State<AddDistributorDialog> {
                       onSaved: (value) {
                         _rating = int.parse(value);
                       },
-                      regex: r'^[0-5]$',
+                      validator: InputRegexValidator.validateRating,
                       hintText: "Rating",
                       keyboardType: TextInputType.number,
                       obscureText: false),

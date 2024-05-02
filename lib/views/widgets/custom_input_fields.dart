@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
+import '../../global/input_regex_validation.dart';
+
 class CustomTextFormField extends StatelessWidget {
-  final Function(String) onSaved;
-  final String regex;
-  final String hintText;
-  final bool obscureText;
-  final TextInputType? keyboardType;
-  final int? maxLines;
+  // Class que define un campo de texto personalizado
+  final Function(String)
+      onSaved; // Funcion que se ejecuta cuando se guarda el campo
+  final StringOrNullFunction validator; // Funcion que valida el campo
+  final String hintText; // Texto que se muestra como pista
+  final bool obscureText; // Indica si el texto es visible o no
+  final TextInputType? keyboardType; // Tipo de teclado
+  final int? maxLines; // Numero maximo de lineas
   const CustomTextFormField({
     super.key,
     required this.onSaved,
-    required this.regex,
+    required this.validator,
     required this.hintText,
     required this.obscureText,
     this.keyboardType,
@@ -34,15 +38,15 @@ class CustomTextFormField extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide.none),
       ),
-      validator: (value) =>
-          RegExp(regex).hasMatch(value!) ? null : "Ingresa un valor válido",
+      validator: (value) => validator(value!),
     );
   }
 }
 
 class CustomTextFormFieldPlain extends StatelessWidget {
+  // Clase que define un campo de texto personalizado sin estilo
   final Function(String) onSaved;
-  final String regex;
+  final StringOrNullFunction validator;
   final int? maxLines;
   final String hintText;
   final bool obscureText;
@@ -50,7 +54,7 @@ class CustomTextFormFieldPlain extends StatelessWidget {
   const CustomTextFormFieldPlain({
     super.key,
     required this.onSaved,
-    required this.regex,
+    required this.validator,
     required this.hintText,
     required this.obscureText,
     this.keyboardType,
@@ -66,8 +70,7 @@ class CustomTextFormFieldPlain extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
       ),
-      validator: (value) =>
-          RegExp(regex).hasMatch(value!) ? null : "Ingresa un valor válido",
+      validator: (value) => validator(value!),
     );
   }
 }

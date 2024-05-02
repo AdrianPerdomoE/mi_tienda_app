@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 
 import 'package:mi_tienda_app/controllers/services/distributor_database_service.dart';
+import 'package:mi_tienda_app/global/input_regex_validation.dart';
 
 import 'package:mi_tienda_app/models/custom_theme.dart';
 import 'package:mi_tienda_app/models/distributor.dart';
@@ -70,6 +71,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
       },
       children: [
         TogglableField(
+          validator: InputRegexValidator.validateName,
           label: "Nombre",
           icon: Icons.store_mall_directory_outlined,
           value: _appDataProvider.appName,
@@ -77,6 +79,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
           isEditing: _isEditingStorageData,
         ),
         TogglableField(
+          validator: InputRegexValidator.validateAddress,
           label: "Direccion",
           icon: Icons.location_on_outlined,
           value: _appDataProvider.address,

@@ -12,7 +12,8 @@ class AppDataProvider extends ChangeNotifier {
       const Color.fromRGBO(247, 200, 29, 1); //colores por defecto
   Color _secondaryColor =
       const Color.fromRGBO(171, 207, 185, 1); //colores por defecto
-  Color _accentColor = Color.fromARGB(255, 22, 22, 22); // colores por defecto
+  Color _accentColor =
+      const Color.fromARGB(255, 22, 22, 22); // colores por defecto
   Color _backgroundColor = const Color.fromRGBO(
       235, 234, 230, 1); // colores por defecto -> fijo para el splash
   Color _textColor = const Color.fromRGBO(13, 12, 8, 1); // colores por defecto

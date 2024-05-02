@@ -14,6 +14,7 @@ import "../../../controllers/services/media_service.dart";
 import "../../../controllers/services/navigation_service.dart";
 
 class SplashScreen extends StatefulWidget {
+  // clase que define el widget de la pantalla de inicio
   // ignore: non_constant_identifier_names
 
   // ignore: non_constant_identifier_names
@@ -69,6 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   onInitializationComplete() {
+    // Funcion que se ejecuta al completar la inicializacion
     GetIt.instance.get<NavigationService>().removeAndNavigateToRoute("/login");
   }
 
@@ -77,6 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _registerServices() {
+    // Funcion que registra los servicios en GetIt
     if (!GetIt.instance.isRegistered<NavigationService>()) {
       GetIt.instance.registerSingleton<NavigationService>(NavigationService());
     }
