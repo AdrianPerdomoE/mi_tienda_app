@@ -68,6 +68,7 @@ class TogglableField extends StatelessWidget {
   final TextEditingController controller;
   final bool? isEditing;
   final StringOrNullFunction validator;
+  final TextInputType keyboardType;
   const TogglableField(
       {super.key,
       required this.label,
@@ -75,6 +76,7 @@ class TogglableField extends StatelessWidget {
       required this.icon,
       required this.validator,
       required this.controller,
+      this.keyboardType = TextInputType.text,
       this.isEditing});
 
   @override
@@ -83,6 +85,7 @@ class TogglableField extends StatelessWidget {
     TextFormField formFiled = TextFormField(
         controller: controller,
         validator: (value) => validator(value!),
+        keyboardType: keyboardType,
         decoration:
             InputDecoration(labelText: value, enabled: isEditing ?? false),
         autovalidateMode: AutovalidateMode.onUserInteraction);

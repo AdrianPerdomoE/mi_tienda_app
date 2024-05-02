@@ -1,13 +1,20 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+
 import 'package:mi_tienda_app/controllers/services/cloud_storage_service.dart';
+import 'package:mi_tienda_app/controllers/services/notification_service.dart';
 import 'package:mi_tienda_app/global/input_regex_validation.dart';
+
 import 'package:mi_tienda_app/views/widgets/editable_image_field.dart';
+import 'package:mi_tienda_app/views/widgets/section_add_button.dart';
 import 'package:mi_tienda_app/views/widgets/section_togglable_field.dart';
+import 'package:mi_tienda_app/views/widgets/star_list_generator.dart';
 
 import '../../../controllers/services/distributor_database_service.dart';
 import '../../../models/distributor.dart';
+import '../../widgets/add_comment_dialog.dart';
+import '../../widgets/comment_widget.dart';
 import '../../widgets/stlyed_elevated_button.dart';
 
 class DistributorInfoScreen extends StatefulWidget {
@@ -24,10 +31,10 @@ class _DistributorInfoScreenState extends State<DistributorInfoScreen> {
   final TextEditingController _number = TextEditingController();
   final TextEditingController _address = TextEditingController();
   final TextEditingController _description = TextEditingController();
-
+  final TextEditingController _rating = TextEditingController();
   bool _editigPersonalData = false;
   bool _editigContactData = false;
-
+  bool _editigRating = false;
   final CloudStorageService _cloudStorageService =
       GetIt.instance.get<CloudStorageService>();
   final DistributorDatabaseService _distributorDatabaseService =
@@ -45,12 +52,52 @@ class _DistributorInfoScreenState extends State<DistributorInfoScreen> {
           child: ListView(
             children: [
               _buildProfileImage(),
+              _buildRating(),
               _buildPersonalDataSection(),
-              _buildContactDataSection()
+              _buildContactDataSection(),
+              _buildCommentsSection(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildRating() {
+    _rating.text = widget.distributor.rating.toString();
+    return Section(
+      title: "Calificación",
+      isEditing: _editigRating,
+      onPressed: () {
+        setState(() {
+          _editigRating = !_editigRating;
+        });
+      },
+      update: () async {
+        setState(() {
+          widget.distributor.rating = int.parse(_rating.text);
+        });
+        await _distributorDatabaseService.updateDistributor(widget.distributor);
+      },
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: TextFormField(
+            controller: _rating,
+            enabled: _editigRating,
+            keyboardType: TextInputType.number,
+            validator: (value) => InputRegexValidator.validateRating(value!),
+            decoration: const InputDecoration(
+                icon: Icon(Icons.star, size: 20, color: Colors.amber)),
+          ),
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: starListGenerator(5, widget.distributor.rating, 30),
+        )
+      ],
     );
   }
 
@@ -168,7 +215,60 @@ class _DistributorInfoScreenState extends State<DistributorInfoScreen> {
       ],
     );
   }
+
+  Widget _buildCommentsSection() {
+    return SectionAddButton(
+      title: "Comentarios",
+      onAdd: () {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AddCommentDialog(
+                addComment: (comment) {
+                  setState(() {
+                    widget.distributor.comments.add(comment);
+                  });
+                },
+                distributor: widget.distributor,
+              );
+            });
+      },
+      children: _buildComments(),
+    );
+  }
+
+  List<Widget> _buildComments() {
+    if (widget.distributor.comments.isEmpty) {
+      return [const Text("No hay comentarios")];
+    }
+    return widget.distributor.comments
+        .map((comment) => CommentWidget(
+              upDate: () {
+                _distributorDatabaseService
+                    .updateDistributor(widget.distributor)
+                    .then((value) {
+                  if (!value) {
+                    GetIt.instance
+                        .get<NotificationService>()
+                        .showNotificationBottom(
+                            context,
+                            "Error al actualizar el comentario",
+                            NotificationType.error);
+                    return null;
+                  }
+                  GetIt.instance
+                      .get<NotificationService>()
+                      .showNotificationBottom(context, "Comentario actualizado",
+                          NotificationType.success);
+                });
+              },
+              comment: comment,
+              onDelete: () {
+                setState(() {
+                  widget.distributor.comments.remove(comment);
+                });
+              },
+            ))
+        .toList();
+  }
 }
-
-//TODO Agregar seccion de gestion del comentario para editar, borrar y agregar comentarios
-

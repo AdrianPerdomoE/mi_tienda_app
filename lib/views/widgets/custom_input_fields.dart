@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../global/input_regex_validation.dart';
 
@@ -11,7 +13,8 @@ class CustomTextFormField extends StatelessWidget {
   final bool obscureText; // Indica si el texto es visible o no
   final TextInputType? keyboardType; // Tipo de teclado
   final int? maxLines; // Numero maximo de lineas
-  const CustomTextFormField({
+  late AppDataProvider appDataProvider;
+  CustomTextFormField({
     super.key,
     required this.onSaved,
     required this.validator,
@@ -22,17 +25,17 @@ class CustomTextFormField extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
+    appDataProvider = context.watch<AppDataProvider>();
     return TextFormField(
+      cursorColor: appDataProvider.accentColor,
       onSaved: (value) => onSaved(value!),
-      cursorColor: Colors.white,
       keyboardType: keyboardType ?? TextInputType.text,
-      style: const TextStyle(color: Colors.white),
       obscureText: obscureText,
       maxLines: maxLines,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.white54),
-        fillColor: const Color.fromRGBO(30, 29, 37, 1),
+        hintStyle: TextStyle(color: appDataProvider.textColor),
+        fillColor: appDataProvider.primaryColor,
         filled: true,
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),

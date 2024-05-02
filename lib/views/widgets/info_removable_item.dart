@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../controllers/providers/app__data_provider.dart';
 
+// ignore: must_be_immutable
 class InfoRemovableItem extends StatelessWidget {
   final Widget itemData;
   final Function? onInfo;

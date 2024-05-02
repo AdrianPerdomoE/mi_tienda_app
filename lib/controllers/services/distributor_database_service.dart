@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/services/cloud_storage_service.dart';
+import 'package:mi_tienda_app/global/placeholder_images_urls.dart';
 import 'package:mi_tienda_app/models/comment.dart';
 import 'package:mi_tienda_app/models/distributor.dart';
 
@@ -43,7 +44,7 @@ class DistributorDatabaseService {
       int rating) async {
     var distributor = {
       "name": name,
-      "imageUrl": "https://picsum.photos/200", // Placeholder image URL
+      "imageUrl": PlaceholderImagesUrls.png150Image, // Placeholder image URL
       "number": number,
       "email": email,
       "address": address,
