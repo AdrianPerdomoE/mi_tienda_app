@@ -241,6 +241,8 @@ class _DistributorInfoScreenState extends State<DistributorInfoScreen> {
     if (widget.distributor.comments.isEmpty) {
       return [const Text("No hay comentarios")];
     }
+    widget.distributor.comments
+        .sort((a, b) => b.creationDate.compareTo(a.creationDate));
     return widget.distributor.comments
         .map((comment) => CommentWidget(
               upDate: () {
