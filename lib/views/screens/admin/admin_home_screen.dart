@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/views/screens/admin/admin_profile_screen.dart';
 //widgets
 import "../../widgets/logout_button.dart";
+//screens
+import 'admin_product_screen.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -13,10 +15,7 @@ class AdminHomeScreen extends StatefulWidget {
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
-    Container(
-      color: Colors.red,
-      child: const Text("Productos"),
-    ),
+    const AdminProductScreen(),
     const AdminProfileScreen()
   ];
 
