@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
-import 'package:mi_tienda_app/controllers/utils/amount_details.dart';
-import 'package:mi_tienda_app/controllers/utils/custom_formats.dart';
 import 'package:mi_tienda_app/models/category.dart';
 import 'package:mi_tienda_app/models/product.dart';
 import 'package:mi_tienda_app/views/widgets/category_card.dart';
