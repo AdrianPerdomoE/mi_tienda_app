@@ -53,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
         colorScheme: ColorScheme.fromSeed(
           seedColor: appDataProvider.primaryColor,
         ),
-        scaffoldBackgroundColor: appDataProvider.backgroundColor,
+        scaffoldBackgroundColor: appDataProvider.secondaryColor,
       ),
       home: Scaffold(
         body: Center(

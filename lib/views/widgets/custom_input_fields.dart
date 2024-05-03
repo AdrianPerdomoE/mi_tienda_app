@@ -34,12 +34,21 @@ class CustomTextFormField extends StatelessWidget {
       maxLines: maxLines,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(color: appDataProvider.textColor),
-        fillColor: appDataProvider.primaryColor,
+        hintStyle: TextStyle(color: Colors.grey[700]),
+        fillColor: appDataProvider.backgroundColor,
         filled: true,
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            color: appDataProvider.accentColor,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            color: appDataProvider.primaryColor,
+          ),
+        ),
       ),
       validator: (value) => validator(value!),
     );

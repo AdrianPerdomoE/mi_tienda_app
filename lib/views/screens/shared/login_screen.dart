@@ -44,9 +44,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildUI() {
     return Scaffold(
+      backgroundColor: _appDataProvider.secondaryColor,
       body: Container(
         padding: EdgeInsets.symmetric(
-            horizontal: _deviceWidth * 0.03, vertical: _deviceHeight * 0.02),
+            horizontal: _deviceWidth * 0.05, vertical: _deviceHeight * 0.02),
         height: _deviceHeight * 0.98,
         width: _deviceWidth * 0.97,
         child: Column(
@@ -74,13 +75,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _pageTitle() {
     return SizedBox(
-      height: _deviceHeight * 0.1,
+      height: _deviceHeight * 0.08,
       child: Text(
         _appDataProvider.appName,
         style: TextStyle(
           color: _appDataProvider.textColor,
           fontSize: 40,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.bold,
+          shadows: [
+            Shadow(
+              color: _appDataProvider.backgroundColor,
+              blurRadius: 10,
+              offset: const Offset(2, 1),
+            ),
+          ],
         ),
       ),
     );
@@ -88,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _loginForm() {
     return SizedBox(
-      height: _deviceHeight * 0.25,
+      height: _deviceHeight * 0.23,
       child: Form(
         key: _loginFormKey,
         child: Column(
@@ -97,14 +105,15 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CustomTextFormField(
-                onSaved: (value) {
-                  setState(() {
-                    email = value;
-                  });
-                },
-                validator: InputRegexValidator.validateEmail,
-                hintText: "Email",
-                obscureText: false),
+              onSaved: (value) {
+                setState(() {
+                  email = value;
+                });
+              },
+              validator: InputRegexValidator.validateEmail,
+              hintText: "Correo electrónico",
+              obscureText: false,
+            ),
             CustomTextFormField(
                 onSaved: (value) {
                   setState(() {
@@ -113,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 validator: InputRegexValidator.validatePassword,
                 maxLines: 1,
-                hintText: "Password",
+                hintText: "Contraseña",
                 obscureText: true),
           ],
         ),
@@ -123,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _loginButton() {
     return RoundedButton(
-      name: "Login",
+      name: "Iniciar sesión",
       height: _deviceHeight * 0.065,
       width: _deviceWidth * 0.65,
       onPressed: () {
@@ -153,9 +162,12 @@ class _LoginScreenState extends State<LoginScreen> {
         _navigationService.navigateToRoute('/register');
       },
       child: Text(
-        "Don't have an account? Register here!",
+        "¿No tienes una cuenta? ¡Haz clic aquí!",
         style: TextStyle(
-          color: _appDataProvider.accentColor,
+          color: _appDataProvider.textColor,
+          decoration: TextDecoration.underline,
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
