@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
+import 'package:mi_tienda_app/controllers/providers/categories_provider.dart';
 import 'package:mi_tienda_app/models/category.dart';
 import 'package:mi_tienda_app/models/product.dart';
 import 'package:mi_tienda_app/views/widgets/category_card.dart';
@@ -16,11 +17,13 @@ class CustomerProductsScreen extends StatefulWidget {
 
 class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
   late AppDataProvider appDataProvider;
+  late CategoriesProvider categoriesProvider;
   late ProductsProvider productsProvider;
 
   @override
   Widget build(BuildContext context) {
     appDataProvider = context.watch<AppDataProvider>();
+    categoriesProvider = context.watch<CategoriesProvider>();
     productsProvider = context.watch<ProductsProvider>();
 
     return Scaffold(
@@ -74,26 +77,13 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
                 ),
                 SizedBox(
                   height: 50,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return CategoryCardWidget(
-                        category: Category(
-                          id: index.toString(),
-                          name: "Categoría $index",
-                          creationDate: DateTime.now(),
-                          hidden: false,
-                        ),
-                      );
-                    },
-                  ),
+                  child: buildCategoriesList(),
                 ),
                 const SizedBox(height: 16, child: Divider()),
               ],
             ),
             Expanded(
-              child: buildProductsList(productsProvider.products),
+              child: buildProductsList(),
             ),
           ],
         ),
@@ -101,9 +91,32 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
     );
   }
 
-  Widget buildProductsList(Stream<List<Product>> productStream) {
+  Widget buildCategoriesList() {
+    return StreamBuilder<List<Category>>(
+      stream: categoriesProvider.categories,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          // Muestra un indicador de carga mientras se obtienen los datos
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        return ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: snapshot.data!.length,
+          itemBuilder: (context, index) {
+            final Category category = snapshot.data![index];
+            return CategoryCardWidget(category: category);
+          },
+        );
+      },
+    );
+  }
+
+  Widget buildProductsList() {
     return StreamBuilder<List<Product>>(
-      stream: productStream,
+      stream: productsProvider.products,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           // Muestra un indicador de carga mientras se obtienen los datos

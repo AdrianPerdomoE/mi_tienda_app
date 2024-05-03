@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
+import 'package:mi_tienda_app/controllers/providers/categories_provider.dart';
 import 'package:provider/provider.dart';
 
 //screens
@@ -32,13 +33,20 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthenticationProvider>(
-            create: (context) => AuthenticationProvider()),
+          create: (context) => AuthenticationProvider(),
+        ),
         ChangeNotifierProvider<AppDataProvider>(
-            create: (context) => AppDataProvider()),
+          create: (context) => AppDataProvider(),
+        ),
         ChangeNotifierProvider<LoadingProvider>(
-            create: (context) => LoadingProvider()),
+          create: (context) => LoadingProvider(),
+        ),
+        ChangeNotifierProvider<CategoriesProvider>(
+          create: (context) => CategoriesProvider(),
+        ),
         ChangeNotifierProvider<ProductsProvider>(
-            create: (context) => ProductsProvider()),
+          create: (context) => ProductsProvider(),
+        ),
       ],
       child: Builder(
         builder: (context) => _buildMaterialApp(context),
