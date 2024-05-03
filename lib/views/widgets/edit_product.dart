@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:file_picker/file_picker.dart';
 //Widgets
+import 'package:mi_tienda_app/views/widgets/editable_image_field.dart';
 import 'package:mi_tienda_app/views/widgets/editable_image_field.dart';
 //Models
 import 'package:mi_tienda_app/models/product.dart';
@@ -8,13 +9,13 @@ import 'package:mi_tienda_app/models/product.dart';
 class EditProduct extends  StatefulWidget{
   final Product product;
   EditProduct({required this.product});
-  
+
   @override
   State<EditProduct> createState() => _EditProductState();
 }
 
 class _EditProductState extends State<EditProduct> {
-  
+  PlatformFile? _image;
   Product product = Product(
     name: '',
     id: '', 
@@ -53,6 +54,7 @@ class _EditProductState extends State<EditProduct> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
+            _ImageField(),
             TextFormField(
               controller: _nameController,
               decoration: InputDecoration(labelText: 'Nombre'),
@@ -90,9 +92,26 @@ class _EditProductState extends State<EditProduct> {
             },child:
               Text('Actualizar producto'),
             ),
+            ElevatedButton(onPressed: (){
+              Navigator.pop(context);
+            }, child: 
+              Text('Cancelar'),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _ImageField() {
+    return EditableImageField(
+      imagePath: 'https://picsum.photos/250?image=9',
+      image: _image,
+      setImageFile: (image) {
+        setState(() {
+          _image = image;
+        });
+      },
     );
   }
 }
