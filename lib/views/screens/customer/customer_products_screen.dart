@@ -101,6 +101,12 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
           );
         }
 
+        if (snapshot.data!.isEmpty) {
+          return const Center(
+            child: Text("No hay categorías disponibles"),
+          );
+        }
+
         return ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: snapshot.data!.length,
@@ -120,6 +126,12 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
         if (!snapshot.hasData) {
           return const Center(
             child: CircularProgressIndicator(),
+          );
+        }
+
+        if (snapshot.data!.isEmpty) {
+          return const Center(
+            child: Text("No hay productos disponibles"),
           );
         }
 

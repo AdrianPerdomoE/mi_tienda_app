@@ -20,7 +20,7 @@ class ProductsDatabaseService {
       String imageUrl,
       double price,
       String categoryId,
-      DateTime creationDate,
+      Timestamp creationDate,
       bool hidden,
       int stock,
       double discount) async {
@@ -57,26 +57,24 @@ class ProductsDatabaseService {
       String imageUrl,
       double price,
       String categoryId,
-      DateTime creationDate,
       bool hidden,
       int stock,
       double discount) async {
-    Product product = Product(
-        id: id,
-        name: name,
-        description: description,
-        imageUrl: imageUrl,
-        price: price,
-        categoryId: categoryId,
-        creationDate: creationDate,
-        hidden: hidden,
-        stock: stock,
-        discount: discount);
+    var product = {
+      "name": name,
+      "description": description,
+      "imageUrl": imageUrl,
+      "price": price,
+      "categoryId": categoryId,
+      "hidden": hidden,
+      "stock": stock,
+      "discount": discount
+    };
     try {
       await _db
           .collection(_productsCollection)
           .doc(id)
-          .update(product.toJson().remove("id"));
+          .update(product);
       return true;
     } catch (e) {
       return false;

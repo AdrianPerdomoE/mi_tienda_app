@@ -29,7 +29,7 @@ class CategoriesDatabaseService {
   }
 
   Future<bool> update(
-      String id, String name, DateTime creationDate, bool hidden) async {
+      String id, String name, Timestamp creationDate, bool hidden) async {
     var category = {
       "name": name,
       "creationDate": creationDate,

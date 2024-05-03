@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Category {
   String id;
   String name;
   bool hidden;
-  DateTime creationDate;
+  Timestamp creationDate;
 
   Category({
     required this.id,
@@ -15,14 +17,14 @@ class Category {
       : id = json['id'],
         name = json['name'],
         hidden = json['hidden'],
-        creationDate = DateTime.parse(json['creationDate']);
+        creationDate = json['creationDate'];
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
       'hidden': hidden,
-      'creationDate': creationDate.toIso8601String()
+      'creationDate': creationDate
     };
   }
 }
