@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/providers/loading_provider.dart';
 import 'package:mi_tienda_app/controllers/services/notification_service.dart';
+import 'package:mi_tienda_app/global/input_regex_validation.dart';
 import 'package:provider/provider.dart';
 //Widgets
 import '../../widgets/custom_input_fields.dart';
@@ -101,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     email = value;
                   });
                 },
-                regex: r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+                validator: InputRegexValidator.validateEmail,
                 hintText: "Email",
                 obscureText: false),
             CustomTextFormField(
@@ -110,7 +111,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     password = value;
                   });
                 },
-                regex: r".{8,}",
+                validator: InputRegexValidator.validatePassword,
+                maxLines: 1,
                 hintText: "Password",
                 obscureText: true),
           ],

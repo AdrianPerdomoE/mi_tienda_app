@@ -4,6 +4,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/services/notification_service.dart';
+import 'package:mi_tienda_app/global/input_regex_validation.dart';
+import 'package:mi_tienda_app/global/placeholder_images_urls.dart';
 
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
@@ -84,7 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _profileImageField() {
     return EditableImageField(
-      imagePath: 'https://picsum.photos/250?image=9',
+      imagePath: PlaceholderImagesUrls.png150Image,
       image: _image,
       setImageFile: (image) {
         setState(() {
@@ -112,7 +114,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       name = value;
                     });
                   },
-                  regex: r'^[a-zA-Z\s]{1,}[\.]{0,1}[a-zA-Z\s]{0,}$',
+                  validator: InputRegexValidator.validateName,
                   hintText: "Nombre",
                   obscureText: false),
               CustomTextFormField(
@@ -121,7 +123,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       email = value;
                     });
                   },
-                  regex: r'.{8,}',
+                  validator: InputRegexValidator.validateEmail,
                   hintText: "Correo Electrónico",
                   obscureText: false),
               CustomTextFormField(
@@ -130,7 +132,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       address = value;
                     });
                   },
-                  regex: r'.{8,}',
+                  validator: InputRegexValidator.validateAddress,
                   hintText: "Dirección",
                   obscureText: false),
               CustomTextFormField(
@@ -139,7 +141,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       password = value;
                     });
                   },
-                  regex: r'.{8,}',
+                  validator: InputRegexValidator.validatePassword,
+                  maxLines: 1,
                   hintText: "Contraseña",
                   obscureText: true),
               _registerButton()

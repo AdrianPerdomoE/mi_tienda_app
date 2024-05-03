@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mi_tienda_app/global/input_regex_validation.dart';
 
 class Section extends StatefulWidget {
   final String title;
@@ -19,6 +20,7 @@ class Section extends StatefulWidget {
 }
 
 class _SectionState extends State<Section> {
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,9 +36,13 @@ class _SectionState extends State<Section> {
                       ? () {}
                       : () {
                           if (widget.isEditing!) {
-                            widget.update!();
+                            if (_formKey.currentState!.validate()) {
+                              widget.update!();
+                              widget.onPressed!();
+                            }
+                          } else {
+                            widget.onPressed!();
                           }
-                          widget.onPressed!();
                         },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -49,7 +55,7 @@ class _SectionState extends State<Section> {
                   ))
               : null,
         ),
-        ...widget.children
+        Form(key: _formKey, child: Column(children: widget.children))
       ],
     );
   }
@@ -61,31 +67,36 @@ class TogglableField extends StatelessWidget {
   final IconData icon;
   final TextEditingController controller;
   final bool? isEditing;
-
+  final StringOrNullFunction validator;
+  final TextInputType keyboardType;
   const TogglableField(
       {super.key,
       required this.label,
       required this.value,
       required this.icon,
+      required this.validator,
       required this.controller,
+      this.keyboardType = TextInputType.text,
       this.isEditing});
 
   @override
   Widget build(BuildContext context) {
     controller.text = value;
+    TextFormField formFiled = TextFormField(
+        controller: controller,
+        validator: (value) => validator(value!),
+        keyboardType: keyboardType,
+        decoration:
+            InputDecoration(labelText: value, enabled: isEditing ?? false),
+        autovalidateMode: AutovalidateMode.onUserInteraction);
+
     return ListTile(
       tileColor: null,
       leading: Icon(icon),
       title: Text(
         label,
       ),
-      subtitle: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: value,
-        ),
-        enabled: isEditing ?? false,
-      ),
+      subtitle: formFiled,
     );
   }
 }

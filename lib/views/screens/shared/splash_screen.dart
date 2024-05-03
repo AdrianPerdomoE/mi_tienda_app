@@ -1,5 +1,7 @@
 //packages
 
+import "package:mi_tienda_app/controllers/services/distributor_database_service.dart";
+import "package:mi_tienda_app/controllers/services/notification_service.dart";
 import 'package:provider/provider.dart';
 
 import "package:flutter/material.dart";
@@ -13,6 +15,7 @@ import "../../../controllers/services/navigation_service.dart";
 import "package:mi_tienda_app/controllers/services/products_database_service.dart";
 
 class SplashScreen extends StatefulWidget {
+  // clase que define el widget de la pantalla de inicio
   // ignore: non_constant_identifier_names
 
   // ignore: non_constant_identifier_names
@@ -68,6 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   onInitializationComplete() {
+    // Funcion que se ejecuta al completar la inicializacion
     GetIt.instance.get<NavigationService>().removeAndNavigateToRoute("/login");
   }
 
@@ -76,6 +80,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _registerServices() {
+    // Funcion que registra los servicios en GetIt
     if (!GetIt.instance.isRegistered<NavigationService>()) {
       GetIt.instance.registerSingleton<NavigationService>(NavigationService());
     }
@@ -93,6 +98,13 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!GetIt.instance.isRegistered<ProductsDatabaseService>()) {
       GetIt.instance.registerSingleton<ProductsDatabaseService>(
           ProductsDatabaseService());
+    if (!GetIt.instance.isRegistered<DistributorDatabaseService>()) {
+      GetIt.instance.registerSingleton<DistributorDatabaseService>(
+          DistributorDatabaseService());
+    }
+    if (!GetIt.instance.isRegistered<NotificationService>()) {
+      GetIt.instance
+          .registerSingleton<NotificationService>(NotificationService());
     }
   }
 }

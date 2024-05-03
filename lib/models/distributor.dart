@@ -1,4 +1,4 @@
-import './Comment.dart';
+import './comment.dart';
 
 class Distributor {
   String id;
@@ -9,7 +9,7 @@ class Distributor {
   String address;
   List<Comment> comments;
   String description;
-  double rating;
+  int rating;
   Distributor({
     required this.id,
     required this.name,
