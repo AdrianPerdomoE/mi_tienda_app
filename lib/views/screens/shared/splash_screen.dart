@@ -98,13 +98,14 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!GetIt.instance.isRegistered<ProductsDatabaseService>()) {
       GetIt.instance.registerSingleton<ProductsDatabaseService>(
           ProductsDatabaseService());
-    if (!GetIt.instance.isRegistered<DistributorDatabaseService>()) {
-      GetIt.instance.registerSingleton<DistributorDatabaseService>(
-          DistributorDatabaseService());
-    }
-    if (!GetIt.instance.isRegistered<NotificationService>()) {
-      GetIt.instance
-          .registerSingleton<NotificationService>(NotificationService());
+      if (!GetIt.instance.isRegistered<DistributorDatabaseService>()) {
+        GetIt.instance.registerSingleton<DistributorDatabaseService>(
+            DistributorDatabaseService());
+      }
+      if (!GetIt.instance.isRegistered<NotificationService>()) {
+        GetIt.instance
+            .registerSingleton<NotificationService>(NotificationService());
+      }
     }
   }
 }
