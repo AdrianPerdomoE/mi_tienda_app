@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 import 'package:mi_tienda_app/controllers/utils/amount_details.dart';
