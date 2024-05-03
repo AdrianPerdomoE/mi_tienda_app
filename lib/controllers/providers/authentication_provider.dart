@@ -67,18 +67,6 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateEmail(String newEmail) async {
-    try {
-      user.email = newEmail;
-      await _auth.currentUser!.updateEmail(
-          newEmail); //esta deprecado para por motivos academicos, se deja asi, ya que no es posible actualiarzlo luego de verificar el numero, ya que no se ingresa siempre con correos reales
-      await _databaseService.updateUserData(user);
-      logOut();
-    } catch (e) {
-      print(e);
-    }
-  }
-
   Future<bool> reauthenticateWithPassword(String password) async {
     try {
       // Re-authenticate the user with their previous password

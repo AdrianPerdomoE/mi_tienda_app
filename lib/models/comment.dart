@@ -13,4 +13,12 @@ class Comment {
       : creator = json['creator'],
         content = json['content'],
         creationDate = DateTime.parse(json['creationDate']);
+
+  Map<String, dynamic> toJson() {
+    return {
+      'creator': creator,
+      'content': content,
+      'creationDate': creationDate.toString(),
+    };
+  }
 }

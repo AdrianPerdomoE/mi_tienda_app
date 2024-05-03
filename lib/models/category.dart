@@ -16,4 +16,13 @@ class Category {
         name = json['name'],
         hidden = json['hidden'],
         creationDate = DateTime.parse(json['creationDate']);
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'hidden': hidden,
+      'creationDate': creationDate.toString(),
+    };
+  }
 }

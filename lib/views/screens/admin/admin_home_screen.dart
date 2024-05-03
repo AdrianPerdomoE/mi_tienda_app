@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mi_tienda_app/views/screens/admin/admin_profile_screen.dart';
 //widgets
 import "../../widgets/logout_button.dart";
 //screens
@@ -15,10 +16,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
     const AdminProductScreen(),
-    Container(
-      color: Colors.blue,
-      child: const Text("Perfil"),
-    ),
+    const AdminProfileScreen()
   ];
 
   @override
@@ -41,7 +39,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
               label: "Productos",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.manage_accounts),
               label: "Perfil",
             ),
           ],
