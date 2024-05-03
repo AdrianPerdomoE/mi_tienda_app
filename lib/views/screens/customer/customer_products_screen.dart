@@ -96,7 +96,6 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
       stream: categoriesProvider.categories,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          // Muestra un indicador de carga mientras se obtienen los datos
           return const Center(
             child: CircularProgressIndicator(),
           );
@@ -119,17 +118,17 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
       stream: productsProvider.products,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          // Muestra un indicador de carga mientras se obtienen los datos
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
 
         return GridView.builder(
+          scrollDirection: Axis.vertical,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
+            crossAxisSpacing: 5,
+            mainAxisSpacing: 5,
           ),
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {

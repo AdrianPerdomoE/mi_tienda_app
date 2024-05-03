@@ -10,7 +10,7 @@ class CategoriesDatabaseService {
   CategoriesDatabaseService() {
     _categories = _db.collection(_categoriesCollection).snapshots().map(
         (snapshot) => snapshot.docs
-            .map((doc) => Category.fromJson(doc.data()..["id"] = doc.id))
+            .map((doc) => Category.fromJson({"id": doc.id, ...doc.data()}))
             .toList());
   }
 

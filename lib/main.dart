@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
-import 'package:mi_tienda_app/controllers/providers/categories_provider.dart';
 import 'package:provider/provider.dart';
 
 //screens
@@ -18,6 +17,7 @@ import './controllers/services/navigation_service.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 import './controllers/providers/authentication_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/loading_provider.dart';
+import 'package:mi_tienda_app/controllers/providers/categories_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/products_provider.dart';
 
 void main() {

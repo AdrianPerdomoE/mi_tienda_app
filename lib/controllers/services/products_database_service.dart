@@ -10,7 +10,7 @@ class ProductsDatabaseService {
   ProductsDatabaseService() {
     _products = _db.collection(_productsCollection).snapshots().map(
         (snapshot) => snapshot.docs
-            .map((doc) => Product.fromJson(doc.data()..["id"] = doc.id))
+            .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
             .toList());
   }
 
@@ -88,10 +88,7 @@ class ProductsDatabaseService {
       "hidden": hidden,
     };
     try {
-      await _db
-          .collection(_productsCollection)
-          .doc(id)
-          .update(product);
+      await _db.collection(_productsCollection).doc(id).update(product);
       return true;
     } catch (e) {
       return false;

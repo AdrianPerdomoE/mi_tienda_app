@@ -22,7 +22,7 @@ class Category {
       'id': id,
       'name': name,
       'hidden': hidden,
-      'creationDate': creationDate.toString(),
+      'creationDate': creationDate.toIso8601String()
     };
   }
 }
