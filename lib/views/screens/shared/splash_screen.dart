@@ -12,6 +12,7 @@ import "../../../controllers/services/cloud_storage_service.dart";
 import '../../../controllers/services/user_database_service.dart';
 import "../../../controllers/services/media_service.dart";
 import "../../../controllers/services/navigation_service.dart";
+import "package:mi_tienda_app/controllers/services/products_database_service.dart";
 
 class SplashScreen extends StatefulWidget {
   // clase que define el widget de la pantalla de inicio
@@ -94,6 +95,9 @@ class _SplashScreenState extends State<SplashScreen> {
       GetIt.instance
           .registerSingleton<UserDatabaseService>(UserDatabaseService());
     }
+    if (!GetIt.instance.isRegistered<ProductsDatabaseService>()) {
+      GetIt.instance.registerSingleton<ProductsDatabaseService>(
+          ProductsDatabaseService());
     if (!GetIt.instance.isRegistered<DistributorDatabaseService>()) {
       GetIt.instance.registerSingleton<DistributorDatabaseService>(
           DistributorDatabaseService());
