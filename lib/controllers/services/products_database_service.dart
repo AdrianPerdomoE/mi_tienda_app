@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mi_tienda_app/models/product.dart';
 
 class ProductsDatabaseService {
-  final String _productsCollection = "products";
+  final String _productsCollection = "Products";
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   late Stream<List<Product>> _products;
   get products => _products;
@@ -84,11 +84,14 @@ class ProductsDatabaseService {
   }
 
   Future<bool> updateHidden(String id, bool hidden) async {
+    var product = {
+      "hidden": hidden,
+    };
     try {
       await _db
           .collection(_productsCollection)
           .doc(id)
-          .update({"hidden": hidden});
+          .update(product);
       return true;
     } catch (e) {
       return false;
