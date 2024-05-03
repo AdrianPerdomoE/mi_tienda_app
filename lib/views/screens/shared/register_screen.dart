@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 import 'package:mi_tienda_app/controllers/services/notification_service.dart';
 import 'package:mi_tienda_app/global/input_regex_validation.dart';
 import 'package:mi_tienda_app/global/placeholder_images_urls.dart';
@@ -47,6 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late CloudStorageService _cloudStorageService;
   late NavigationService _navigationService;
   late NotificationService _notificationService;
+  late AppDataProvider _appDataProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -57,12 +59,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _cloudStorageService = GetIt.instance.get<CloudStorageService>();
     _navigationService = GetIt.instance.get<NavigationService>();
     _notificationService = NotificationService();
+    _appDataProvider = context.watch<AppDataProvider>();
 
     return _buildUI();
   }
 
   Widget _buildUI() {
     return Scaffold(
+      backgroundColor: _appDataProvider.secondaryColor,
       resizeToAvoidBottomInset:
           false, //No se cambia el tamaño de la pantalla cuando aparece el teclado
       body: Container(
@@ -124,7 +128,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     });
                   },
                   validator: InputRegexValidator.validateEmail,
-                  hintText: "Correo Electrónico",
+                  hintText: "Correo electrónico",
                   obscureText: false),
               CustomTextFormField(
                   onSaved: (value) {
@@ -145,7 +149,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   maxLines: 1,
                   hintText: "Contraseña",
                   obscureText: true),
-              _registerButton()
+              _registerButton(),
+              _registerAccountLink(),
             ],
           )),
     );
@@ -153,42 +158,58 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _registerButton() {
     return RoundedButton(
-        name: 'Registrar',
-        height: _deviceHeight * 0.065,
-        width: _deviceWidth * 0.65,
-        onPressed: () async {
-          if (formKey.currentState!.validate()) {
-            if (_image == null) {
-              _notificationService.showNotificationBottom(context,
-                  'Por favor selecciona una imagen', NotificationType.warning);
-              return;
-            }
-            formKey.currentState!.save();
-            String? uid =
-                await _authenticationProvider.registerUsingEmailAndPassword(
-                    email: email!, password: password!);
-            if (uid == null) {
-              _notificationService.showNotificationBottom(
-                  context,
-                  'Hubo un error al registrar el usuario',
-                  NotificationType.error);
-              return;
-            }
-            String? imageUrl =
-                await _cloudStorageService.saveUserImageToStorage(uid, _image!);
-            if (imageUrl == null) {
-              _notificationService.showNotificationBottom(
-                  context,
-                  'Hubo un error al registrar la imagen',
-                  NotificationType.error);
-              imageUrl = "";
-            }
-            _databaseService.createCustomer(
-                uid, name!, email!, imageUrl, address!);
+      name: 'Registrarse',
+      height: _deviceHeight * 0.065,
+      width: _deviceWidth * 0.65,
+      onPressed: () async {
+        if (formKey.currentState!.validate()) {
+          if (_image == null) {
             _notificationService.showNotificationBottom(context,
-                'Usuario registrado correctamente', NotificationType.success);
-            _navigationService.removeAndNavigateToRoute('/login');
+                'Por favor selecciona una imagen', NotificationType.warning);
+            return;
           }
-        });
+          formKey.currentState!.save();
+          String? uid =
+              await _authenticationProvider.registerUsingEmailAndPassword(
+                  email: email!, password: password!);
+          if (uid == null) {
+            _notificationService.showNotificationBottom(
+                context,
+                'Hubo un error al registrar el usuario',
+                NotificationType.error);
+            return;
+          }
+          String? imageUrl =
+              await _cloudStorageService.saveUserImageToStorage(uid, _image!);
+          if (imageUrl == null) {
+            _notificationService.showNotificationBottom(context,
+                'Hubo un error al registrar la imagen', NotificationType.error);
+            imageUrl = "";
+          }
+          _databaseService.createCustomer(
+              uid, name!, email!, imageUrl, address!);
+          _notificationService.showNotificationBottom(context,
+              'Usuario registrado correctamente', NotificationType.success);
+          _navigationService.removeAndNavigateToRoute('/login');
+        }
+      },
+    );
+  }
+
+  Widget _registerAccountLink() {
+    return GestureDetector(
+      onTap: () {
+        _navigationService.navigateToRoute('/login');
+      },
+      child: Text(
+        "¿Ya tienes una cuenta? ¡Inicia sesión aquí!",
+        style: TextStyle(
+          color: _appDataProvider.textColor,
+          decoration: TextDecoration.underline,
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
   }
 }
