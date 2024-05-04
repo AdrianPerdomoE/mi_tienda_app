@@ -59,13 +59,17 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                     ),
                   ),
                 ),
-                child: ClipRRect(
-                  child: FittedBox(
-                    child: Image.network(
-                      widget.product.imageUrl,
-                      height: 200,
-                      fit: BoxFit.contain,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    image: DecorationImage(
+                      image: NetworkImage(widget.product.imageUrl),
+                      fit: BoxFit.fill,
                     ),
+                  ),
+                  child: const SizedBox(
+                    height: double.maxFinite,
+                    width: double.maxFinite,
                   ),
                 ),
               ),

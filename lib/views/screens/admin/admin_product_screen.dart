@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 import 'package:mi_tienda_app/controllers/services/categories_database_service.dart';
 import 'package:mi_tienda_app/controllers/services/products_database_service.dart';
 import 'package:mi_tienda_app/models/category.dart';
@@ -7,8 +8,9 @@ import 'package:mi_tienda_app/views/widgets/create_product_dialog.dart.dart';
 import 'package:mi_tienda_app/views/widgets/section_single_child_add_button.dart';
 //Widgets
 import 'package:mi_tienda_app/views/widgets/create_category_dialog.dart.dart';
-import 'package:mi_tienda_app/views/widgets/product_grid.dart';
+import 'package:mi_tienda_app/views/widgets/products_admin_grid.dart';
 import 'package:mi_tienda_app/views/widgets/section_add_button.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/product.dart';
 
@@ -30,8 +32,10 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
   final ProductsDatabaseService _productsDatabaseService =
       GetIt.instance.get<ProductsDatabaseService>();
   late ScrollController _controller;
+  late AppDataProvider appDataProvider;
   @override
   Widget build(BuildContext context) {
+    appDataProvider = context.watch<AppDataProvider>();
     _controller = PrimaryScrollController.of(context);
     _width = MediaQuery.of(context).size.width;
     _height = MediaQuery.of(context).size.height;
@@ -146,27 +150,23 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
   }
 
   Widget _categoryButton({required String label}) {
-    return InkWell(
-      onTap: () {},
-      child: Center(
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: InkWell(
+        onTap: () {},
+        child: Chip(
+          label: Text(
+            label,
+            style: TextStyle(
+                color: appDataProvider.primaryColor,
+                fontWeight: FontWeight.bold),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+              color: appDataProvider.primaryColor,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
           ),
         ),
       ),

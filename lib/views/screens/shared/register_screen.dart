@@ -199,7 +199,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _registerAccountLink() {
     return GestureDetector(
       onTap: () {
-        _navigationService.navigateToRoute('/login');
+        _navigationService.goBack();
       },
       child: Text(
         "¿Ya tienes una cuenta? ¡Inicia sesión aquí!",
