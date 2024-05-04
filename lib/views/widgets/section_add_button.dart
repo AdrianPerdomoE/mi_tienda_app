@@ -23,6 +23,7 @@ class SectionAddButton extends StatelessWidget {
           tileColor: null,
           title: Text(
             title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           trailing: ElevatedButton(
               onPressed: onAdd == null

@@ -29,6 +29,7 @@ class _SectionState extends State<Section> {
           tileColor: null,
           title: Text(
             widget.title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           trailing: widget.isEditing != null
               ? ElevatedButton(

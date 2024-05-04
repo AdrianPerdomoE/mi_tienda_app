@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 import 'package:mi_tienda_app/models/category.dart';
@@ -82,7 +83,7 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
                         category: Category(
                           id: index.toString(),
                           name: "Categoría $index",
-                          creationDate: DateTime.now(),
+                          creationDate: Timestamp.now(),
                           hidden: false,
                         ),
                       );

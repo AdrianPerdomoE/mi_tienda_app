@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:mi_tienda_app/controllers/services/distributor_database_service.dart';
 import 'package:mi_tienda_app/global/input_regex_validation.dart';
 import 'package:provider/provider.dart';
 

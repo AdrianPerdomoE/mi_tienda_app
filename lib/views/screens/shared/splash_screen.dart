@@ -1,5 +1,6 @@
 //packages
 
+import "package:mi_tienda_app/controllers/services/categories_database_service.dart";
 import "package:mi_tienda_app/controllers/services/distributor_database_service.dart";
 import "package:mi_tienda_app/controllers/services/notification_service.dart";
 import 'package:provider/provider.dart';
@@ -95,17 +96,21 @@ class _SplashScreenState extends State<SplashScreen> {
       GetIt.instance
           .registerSingleton<UserDatabaseService>(UserDatabaseService());
     }
+    if (!GetIt.instance.isRegistered<CategoriesDatabaseService>()) {
+      GetIt.instance.registerSingleton<CategoriesDatabaseService>(
+          CategoriesDatabaseService());
+    }
     if (!GetIt.instance.isRegistered<ProductsDatabaseService>()) {
       GetIt.instance.registerSingleton<ProductsDatabaseService>(
           ProductsDatabaseService());
-      if (!GetIt.instance.isRegistered<DistributorDatabaseService>()) {
-        GetIt.instance.registerSingleton<DistributorDatabaseService>(
-            DistributorDatabaseService());
-      }
-      if (!GetIt.instance.isRegistered<NotificationService>()) {
-        GetIt.instance
-            .registerSingleton<NotificationService>(NotificationService());
-      }
+    }
+    if (!GetIt.instance.isRegistered<DistributorDatabaseService>()) {
+      GetIt.instance.registerSingleton<DistributorDatabaseService>(
+          DistributorDatabaseService());
+    }
+    if (!GetIt.instance.isRegistered<NotificationService>()) {
+      GetIt.instance
+          .registerSingleton<NotificationService>(NotificationService());
     }
   }
 }

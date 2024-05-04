@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 //Widgets
 import 'package:mi_tienda_app/views/widgets/editable_image_field.dart';
-import 'package:mi_tienda_app/views/widgets/editable_image_field.dart';
 //Models
 import 'package:mi_tienda_app/models/product.dart';
 
-class EditProduct extends  StatefulWidget{
+class EditProduct extends StatefulWidget {
   final Product product;
   EditProduct({required this.product});
 
@@ -17,17 +16,16 @@ class EditProduct extends  StatefulWidget{
 class _EditProductState extends State<EditProduct> {
   PlatformFile? _image;
   Product product = Product(
-    name: '',
-    id: '', 
-    description: '', 
-    imageUrl: '', 
-    price: 0, 
-    categoryId: '', 
-    creationDate: DateTime.now(), 
-    hidden: false, 
-    stock: 0, 
-    discount: 0
-  );
+      name: '',
+      id: '',
+      description: '',
+      imageUrl: '',
+      price: 0,
+      categoryId: '',
+      creationDate: DateTime.now(),
+      hidden: false,
+      stock: 0,
+      discount: 0);
 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
@@ -35,9 +33,9 @@ class _EditProductState extends State<EditProduct> {
   TextEditingController _categoryIdController = TextEditingController();
   TextEditingController _stockController = TextEditingController();
   TextEditingController _discountController = TextEditingController();
-  
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _nameController.text = product.name;
     _descriptionController.text = product.description;
@@ -79,23 +77,25 @@ class _EditProductState extends State<EditProduct> {
               controller: _discountController,
               decoration: InputDecoration(labelText: 'Descuento'),
             ),
-            ElevatedButton(onPressed: () {
-              setState(() {
-                product.name = _nameController.text;
-                product.description = _descriptionController.text;
-                product.price = double.parse(_priceController.text);
-                product.categoryId = _categoryIdController.text;
-                product.stock = int.parse(_stockController.text);
-                product.discount = double.parse(_discountController.text);
-              });
-              Navigator.pop(context, product);
-            },child:
-              Text('Actualizar producto'),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  product.name = _nameController.text;
+                  product.description = _descriptionController.text;
+                  product.price = double.parse(_priceController.text);
+                  product.categoryId = _categoryIdController.text;
+                  product.stock = int.parse(_stockController.text);
+                  product.discount = double.parse(_discountController.text);
+                });
+                Navigator.pop(context, product);
+              },
+              child: Text('Actualizar producto'),
             ),
-            ElevatedButton(onPressed: (){
-              Navigator.pop(context);
-            }, child: 
-              Text('Cancelar'),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancelar'),
             ),
           ],
         ),
