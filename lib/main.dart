@@ -17,6 +17,7 @@ import './controllers/services/navigation_service.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 import './controllers/providers/authentication_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/loading_provider.dart';
+import 'package:mi_tienda_app/controllers/providers/categories_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/products_provider.dart';
 
 void main() {
@@ -32,13 +33,20 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthenticationProvider>(
-            create: (context) => AuthenticationProvider()),
+          create: (context) => AuthenticationProvider(),
+        ),
         ChangeNotifierProvider<AppDataProvider>(
-            create: (context) => AppDataProvider()),
+          create: (context) => AppDataProvider(),
+        ),
         ChangeNotifierProvider<LoadingProvider>(
-            create: (context) => LoadingProvider()),
+          create: (context) => LoadingProvider(),
+        ),
+        ChangeNotifierProvider<CategoriesProvider>(
+          create: (context) => CategoriesProvider(),
+        ),
         ChangeNotifierProvider<ProductsProvider>(
-            create: (context) => ProductsProvider()),
+          create: (context) => ProductsProvider(),
+        ),
       ],
       child: Builder(
         builder: (context) => _buildMaterialApp(context),

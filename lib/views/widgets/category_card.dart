@@ -32,10 +32,10 @@ class _CategoryCardWidgetState extends State<CategoryCardWidget> {
           shape: RoundedRectangleBorder(
             side: BorderSide(
               color: appDataProvider
-                  .primaryColor, // Cambiar el color del borde a amarillo
-              width: 1, // Grosor del borde
+                  .primaryColor,
+              width: 1,
             ),
-            borderRadius: BorderRadius.circular(8.0), // Radio de las esquinas
+            borderRadius: BorderRadius.circular(8.0),
           ),
         ),
       ),

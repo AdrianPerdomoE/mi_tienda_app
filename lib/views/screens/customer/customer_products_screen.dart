@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
+import 'package:mi_tienda_app/controllers/providers/categories_provider.dart';
 import 'package:mi_tienda_app/models/category.dart';
 import 'package:mi_tienda_app/models/product.dart';
 import 'package:mi_tienda_app/views/widgets/category_card.dart';
@@ -17,11 +18,13 @@ class CustomerProductsScreen extends StatefulWidget {
 
 class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
   late AppDataProvider appDataProvider;
+  late CategoriesProvider categoriesProvider;
   late ProductsProvider productsProvider;
 
   @override
   Widget build(BuildContext context) {
     appDataProvider = context.watch<AppDataProvider>();
+    categoriesProvider = context.watch<CategoriesProvider>();
     productsProvider = context.watch<ProductsProvider>();
 
     return Scaffold(
@@ -75,26 +78,13 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
                 ),
                 SizedBox(
                   height: 50,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return CategoryCardWidget(
-                        category: Category(
-                          id: index.toString(),
-                          name: "Categoría $index",
-                          creationDate: Timestamp.now(),
-                          hidden: false,
-                        ),
-                      );
-                    },
-                  ),
+                  child: buildCategoriesList(),
                 ),
                 const SizedBox(height: 16, child: Divider()),
               ],
             ),
             Expanded(
-              child: buildProductsList(productsProvider.products),
+              child: buildProductsList(),
             ),
           ],
         ),
@@ -102,22 +92,56 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
     );
   }
 
-  Widget buildProductsList(Stream<List<Product>> productStream) {
-    return StreamBuilder<List<Product>>(
-      stream: productStream,
+  Widget buildCategoriesList() {
+    return StreamBuilder<List<Category>>(
+      stream: categoriesProvider.categories,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          // Muestra un indicador de carga mientras se obtienen los datos
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
 
+        if (snapshot.data!.isEmpty) {
+          return const Center(
+            child: Text("No hay categorías disponibles"),
+          );
+        }
+
+        return ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: snapshot.data!.length,
+          itemBuilder: (context, index) {
+            final Category category = snapshot.data![index];
+            return CategoryCardWidget(category: category);
+          },
+        );
+      },
+    );
+  }
+
+  Widget buildProductsList() {
+    return StreamBuilder<List<Product>>(
+      stream: productsProvider.products,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (snapshot.data!.isEmpty) {
+          return const Center(
+            child: Text("No hay productos disponibles"),
+          );
+        }
+
         return GridView.builder(
+          scrollDirection: Axis.vertical,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
+            crossAxisSpacing: 5,
+            mainAxisSpacing: 5,
           ),
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {

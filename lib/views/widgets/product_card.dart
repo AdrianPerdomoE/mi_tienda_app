@@ -15,17 +15,18 @@ class ProductCardWidget extends StatefulWidget {
 
 class _ProductCardWidgetState extends State<ProductCardWidget> {
   late AppDataProvider appDataProvider;
+  late Map<String, double> dcValues;
+  late double price;
+  late double discount;
+  late double finalPrice;
 
   @override
   Widget build(BuildContext context) {
     appDataProvider = context.watch<AppDataProvider>();
-
-    Map<String, double> dcValues =
-        discountValues(widget.product.price, widget.product.discount);
-    double price = dcValues['price']!;
-    double discount = dcValues['discount']!;
-    double discountAmount = dcValues['discountAmount']!;
-    double finalPrice = dcValues['finalPrice']!;
+    dcValues = discountValues(widget.product.price, widget.product.discount);
+    price = dcValues['price']!;
+    discount = dcValues['discount']!;
+    finalPrice = dcValues['finalPrice']!;
 
     return InkWell(
       onTap: () => showProductDetails(),
@@ -42,26 +43,30 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  topRight: Radius.circular(8),
-                ),
-                color: appDataProvider.backgroundColor,
-                border: Border(
-                  bottom: BorderSide(
-                    color: appDataProvider.accentColor,
-                    width: 1,
+            Flexible(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                  ),
+                  color: appDataProvider.backgroundColor,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: appDataProvider.accentColor,
+                      width: 1,
+                    ),
                   ),
                 ),
-              ),
-              child: ClipRRect(
-                child: Image.network(
-                  widget.product.imageUrl,
-                  height: 70,
-                  fit: BoxFit.contain,
+                child: ClipRRect(
+                  child: FittedBox(
+                    child: Image.network(
+                      widget.product.imageUrl,
+                      height: 200,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -127,35 +132,34 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10, bottom: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: appDataProvider.primaryColor,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 0,
-                      ),
-                    ),
-                    onPressed: () {
-                      // Agregar al carrito
-                    },
-                    icon: Icon(
-                      Icons.add_shopping_cart,
-                      color: appDataProvider.backgroundColor,
-                      size: 14,
-                      weight: 500,
-                    ),
-                    label: Text(
-                      'Añadir',
-                      style: TextStyle(
-                          color: appDataProvider.backgroundColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold),
+              child: Container(
+                height: 30,
+                alignment: Alignment.center,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: appDataProvider.primaryColor,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 0,
                     ),
                   ),
-                ],
+                  onPressed: () {
+                    // Agregar al carrito
+                  },
+                  icon: Icon(
+                    Icons.add_shopping_cart,
+                    color: appDataProvider.backgroundColor,
+                    size: 14,
+                    weight: 500,
+                  ),
+                  label: Text(
+                    'Añadir',
+                    style: TextStyle(
+                        color: appDataProvider.backgroundColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
               ),
             ),
           ],
@@ -213,7 +217,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  "\$ ${widget.product.price.toStringAsFixed(0).replaceAllMapped(
+                  "\$ ${price.toStringAsFixed(0).replaceAllMapped(
                         RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
                         (Match m) => '${m[1]},',
                       )}",
