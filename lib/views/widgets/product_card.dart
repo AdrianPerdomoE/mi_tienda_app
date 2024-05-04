@@ -51,7 +51,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                     topLeft: Radius.circular(8),
                     topRight: Radius.circular(8),
                   ),
-                  color: appDataProvider.backgroundColor,
+                  color: Colors.white,
                   border: Border(
                     bottom: BorderSide(
                       color: appDataProvider.accentColor,
@@ -64,7 +64,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
                       image: NetworkImage(widget.product.imageUrl),
-                      fit: BoxFit.fill,
+                      fit: BoxFit.contain,
                     ),
                   ),
                   child: const SizedBox(
