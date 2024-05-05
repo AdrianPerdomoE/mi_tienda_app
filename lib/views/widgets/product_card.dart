@@ -125,7 +125,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                         ),
                         padding: const EdgeInsets.all(4),
                         child: Text(
-                          toPercentage(discount),
+                          toPercentage(discount * -1),
                           style: TextStyle(
                             fontSize: 10,
                             color: appDataProvider.backgroundColor,
@@ -268,7 +268,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                           ),
                           padding: const EdgeInsets.all(4),
                           child: Text(
-                            toPercentage(discount),
+                            toPercentage(discount * -1),
                             style: TextStyle(
                               fontSize: 16,
                               color: appDataProvider.backgroundColor,
