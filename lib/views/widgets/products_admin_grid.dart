@@ -76,10 +76,11 @@ class _ProductAdminCardState extends State<ProductAdminCard> {
             flex: 2,
             child: DecoratedBox(
               decoration: BoxDecoration(
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
                 image: DecorationImage(
                   image: NetworkImage(widget.product.imageUrl),
-                  fit: BoxFit.fill,
+                  fit: BoxFit.contain,
                 ),
               ),
               child: const SizedBox(

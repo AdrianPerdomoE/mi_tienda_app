@@ -19,23 +19,27 @@ class _CategoryCardWidgetState extends State<CategoryCardWidget> {
     appDataProvider = context.watch<AppDataProvider>();
 
     return Padding(
-      padding: const EdgeInsets.only(right: 10),
+      padding: const EdgeInsets.only(right: 4),
       child: InkWell(
         onTap: () {},
-        child: Chip(
-          label: Text(
-            widget.category.name,
-            style: TextStyle(
-                color: appDataProvider.primaryColor,
-                fontWeight: FontWeight.bold),
-          ),
+        child: Card(
+          color: appDataProvider.backgroundColor,
           shape: RoundedRectangleBorder(
             side: BorderSide(
-              color: appDataProvider
-                  .primaryColor,
+              color: appDataProvider.primaryColor,
               width: 1,
             ),
             borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
+            child: Text(
+              widget.category.name,
+              style: TextStyle(
+                color: appDataProvider.primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
       ),
