@@ -3,7 +3,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/global/placeholder_images_urls.dart';
 import 'package:mi_tienda_app/models/product.dart';
-
 import 'cloud_storage_service.dart';
 
 class ProductsDatabaseService {
@@ -19,8 +18,11 @@ class ProductsDatabaseService {
   }
 
   void getAllProducts() {
-    _products = _db.collection(_productsCollection).snapshots().map(
-        (snapshot) => snapshot.docs
+    _products = _db
+        .collection(_productsCollection)
+        .where("hidden", isEqualTo: false)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
             .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
             .toList());
   }
@@ -29,8 +31,11 @@ class ProductsDatabaseService {
     if (name.isEmpty) {
       getAllProducts();
     } else {
-      _products =
-          _db.collection(_productsCollection).snapshots().map((snapshot) {
+      _products = _db
+          .collection(_productsCollection)
+          .where("hidden", isEqualTo: false)
+          .snapshots()
+          .map((snapshot) {
         return snapshot.docs
             .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
             .where((product) =>
@@ -46,6 +51,7 @@ class ProductsDatabaseService {
     } else {
       _products = _db
           .collection(_productsCollection)
+          .where("hidden", isEqualTo: false)
           .where("categoryId", whereIn: categoryIds)
           .snapshots()
           .map((snapshot) => snapshot.docs

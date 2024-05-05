@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/categories_provider.dart';
@@ -112,7 +111,7 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
                   children: [
                     Text(
                       "$productsCount producto${productsCount != 1 ? 's' : ''} encontrados",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
