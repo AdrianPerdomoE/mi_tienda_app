@@ -93,12 +93,14 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                   Text(
                     toCOP(price),
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight:
+                          discount != 0 ? FontWeight.normal : FontWeight.bold,
                       fontSize: 14,
                       color: appDataProvider.accentColor,
                       decoration: discount != 0
                           ? TextDecoration.lineThrough
                           : TextDecoration.none,
+                      decorationColor: appDataProvider.accentColor,
                     ),
                   ),
                   if (discount != 0)
@@ -109,6 +111,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                         style: TextStyle(
                           fontSize: 14,
                           color: appDataProvider.accentColor,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -122,7 +125,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                         ),
                         padding: const EdgeInsets.all(4),
                         child: Text(
-                          toPercentage(discount),
+                          toPercentage(discount * -1),
                           style: TextStyle(
                             fontSize: 10,
                             color: appDataProvider.backgroundColor,
@@ -221,14 +224,60 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  "\$ ${price.toStringAsFixed(0).replaceAllMapped(
-                        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-                        (Match m) => '${m[1]},',
-                      )}",
+                  "${widget.product.stock} unidades disponibles",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: appDataProvider.textColor),
+                    fontSize: 14,
+                    color: appDataProvider.accentColor,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Text(
+                      toCOP(price),
+                      style: TextStyle(
+                        fontWeight:
+                            discount != 0 ? FontWeight.normal : FontWeight.bold,
+                        fontSize: 20,
+                        color: appDataProvider.textColor,
+                        decoration: discount != 0
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
+                        decorationColor: appDataProvider.textColor,
+                      ),
+                    ),
+                    if (discount != 0)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Text(
+                          toCOP(finalPrice),
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: appDataProvider.textColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    if (discount != 0)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: appDataProvider.accentColor,
+                          ),
+                          padding: const EdgeInsets.all(4),
+                          child: Text(
+                            toPercentage(discount * -1),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: appDataProvider.backgroundColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ],
             ),

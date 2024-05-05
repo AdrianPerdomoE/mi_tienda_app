@@ -3,7 +3,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/global/placeholder_images_urls.dart';
 import 'package:mi_tienda_app/models/product.dart';
-
 import 'cloud_storage_service.dart';
 
 class ProductsDatabaseService {
@@ -13,11 +12,52 @@ class ProductsDatabaseService {
   get products => _products;
   final CloudStorageService _cloudStorageService =
       GetIt.instance.get<CloudStorageService>();
+
   ProductsDatabaseService() {
-    _products = _db.collection(_productsCollection).snapshots().map(
-        (snapshot) => snapshot.docs
+    getAllProducts();
+  }
+
+  void getAllProducts() {
+    _products = _db
+        .collection(_productsCollection)
+        .where("hidden", isEqualTo: false)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
             .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
             .toList());
+  }
+
+  void filterProductsByName(String name) {
+    if (name.isEmpty) {
+      getAllProducts();
+    } else {
+      _products = _db
+          .collection(_productsCollection)
+          .where("hidden", isEqualTo: false)
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs
+            .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
+            .where((product) =>
+                product.name.toLowerCase().contains(name.toLowerCase()))
+            .toList();
+      });
+    }
+  }
+
+  void filterProductsByCategories(List<String> categoryIds) {
+    if (categoryIds.isEmpty) {
+      getAllProducts();
+    } else {
+      _products = _db
+          .collection(_productsCollection)
+          .where("hidden", isEqualTo: false)
+          .where("categoryId", whereIn: categoryIds)
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
+              .toList());
+    }
   }
 
   Future<bool> add(String name, String description, PlatformFile image,

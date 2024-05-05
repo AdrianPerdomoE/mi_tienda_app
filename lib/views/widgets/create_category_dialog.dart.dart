@@ -15,6 +15,7 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
 
   final _formKey = GlobalKey<FormState>();
   String categoryName = "";
+  int categoryOrder = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -30,25 +31,36 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
           onPressed: () {
             if (_formKey.currentState!.validate()) {
               _formKey.currentState!.save();
-              _categoriesDatabaseService.add(categoryName);
+              _categoriesDatabaseService.add(categoryName, categoryOrder);
               Navigator.of(context).pop();
             }
           },
           child: const Text('Agregar'),
         ),
       ],
-      title: const Text('Agregar Categoría'),
+      title: const Text('Agregar categoría'),
       content: Form(
-          key: _formKey,
-          child: CustomTextFormFieldPlain(
-            hintText: "Nombre de la categoría",
-            obscureText: false,
-            validator: InputRegexValidator.validateName,
-            onSaved: (p0) {
-              categoryName = p0!;
-            },
-            maxLines: 1,
-          )),
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CustomTextFormFieldPlain(
+              onSaved: (value) => categoryName = value,
+              hintText: "Nombre de la categoría",
+              validator: InputRegexValidator.validateName,
+              obscureText: false,
+              maxLines: 1,
+            ),
+            CustomTextFormFieldPlain(
+              onSaved: (value) => categoryOrder = int.parse(value),
+              hintText: "Orden de la categoría",
+              validator: InputRegexValidator.validateNumber,
+              obscureText: false,
+              maxLines: 1,
+            )
+          ],
+        ),
+      ),
     );
   }
 }

@@ -97,4 +97,14 @@ class InputRegexValidator {
     }
     return null;
   }
+
+  static String? validateNumber(String value) {
+    // Método que valida un número
+    if (value.isEmpty) {
+      return 'El campo es requerido';
+    } else if (double.parse(value) < 0) {
+      return 'Ingresa un valor mayor o igual a 0';
+    }
+    return null;
+  }
 }
