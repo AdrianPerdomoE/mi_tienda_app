@@ -13,11 +13,30 @@ class ProductsDatabaseService {
   get products => _products;
   final CloudStorageService _cloudStorageService =
       GetIt.instance.get<CloudStorageService>();
+
   ProductsDatabaseService() {
+    getAllProducts();
+  }
+
+  Future<void> getAllProducts() async {
     _products = _db.collection(_productsCollection).snapshots().map(
         (snapshot) => snapshot.docs
             .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
             .toList());
+  }
+
+  Future<void> filterProductsByCategories(List<String> categoryIds) async {
+    if (categoryIds.isEmpty) {
+      getAllProducts();
+    } else {
+      _products = _db
+          .collection(_productsCollection)
+          .where("categoryId", whereIn: categoryIds)
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
+              .toList());
+    }
   }
 
   Future<bool> add(String name, String description, PlatformFile image,
