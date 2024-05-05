@@ -18,14 +18,29 @@ class ProductsDatabaseService {
     getAllProducts();
   }
 
-  Future<void> getAllProducts() async {
+  void getAllProducts() {
     _products = _db.collection(_productsCollection).snapshots().map(
         (snapshot) => snapshot.docs
             .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
             .toList());
   }
 
-  Future<void> filterProductsByCategories(List<String> categoryIds) async {
+  void filterProductsByName(String name) {
+    if (name.isEmpty) {
+      getAllProducts();
+    } else {
+      _products =
+          _db.collection(_productsCollection).snapshots().map((snapshot) {
+        return snapshot.docs
+            .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
+            .where((product) =>
+                product.name.toLowerCase().contains(name.toLowerCase()))
+            .toList();
+      });
+    }
+  }
+
+  void filterProductsByCategories(List<String> categoryIds) {
     if (categoryIds.isEmpty) {
       getAllProducts();
     } else {

@@ -17,6 +17,11 @@ class ProductsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void filterProductsByName(String name) {
+    _productsDatabaseService.filterProductsByName(name);
+    notifyListeners();
+  }
+
   void addCategoryToFilter(String categoryId) {
     if (!categoriesToFilter.contains(categoryId)) {
       categoriesToFilter.add(categoryId);

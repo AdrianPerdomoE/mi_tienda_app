@@ -21,11 +21,20 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
   late CategoriesProvider categoriesProvider;
   late ProductsProvider productsProvider;
 
+  String searchValue = '';
+  int productsCount = 0;
+
   @override
   Widget build(BuildContext context) {
     appDataProvider = context.watch<AppDataProvider>();
     categoriesProvider = context.watch<CategoriesProvider>();
     productsProvider = context.watch<ProductsProvider>();
+
+    productsProvider.products.listen((products) {
+      setState(() {
+        productsCount = products.length;
+      });
+    });
 
     return Scaffold(
       body: Padding(
@@ -48,6 +57,10 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
               height: 12,
             ),
             SearchBar(
+              controller: TextEditingController(text: searchValue),
+              onChanged: (value) => searchValue = value,
+              onSubmitted: (value) =>
+                  productsProvider.filterProductsByName(value),
               padding: const MaterialStatePropertyAll<EdgeInsets>(
                 EdgeInsets.symmetric(horizontal: 10),
               ),
@@ -57,32 +70,65 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
                   // Abrir opciones de búsqueda
                 },
               ),
-              hintText: 'Buscar un producto...',
+              trailing: [
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () =>
+                      productsProvider.filterProductsByName(searchValue),
+                ),
+              ],
+              hintText: 'Buscar productos...',
             ),
             const SizedBox(
               height: 16,
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Categorías",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+            if (searchValue.isEmpty)
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Categorías",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  SizedBox(
+                    height: 50,
+                    child: buildCategoriesList(),
+                  ),
+                  const SizedBox(height: 16, child: Divider()),
+                ],
+              ),
+            if (searchValue.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "$productsCount producto${productsCount != 1 ? 's' : ''} encontrados",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          searchValue = '';
+                          productsProvider.filterProductsByName(searchValue);
+                        });
+                      },
+                      child: const Text("Limpiar búsqueda"),
+                    ),
+                  ],
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
-                SizedBox(
-                  height: 50,
-                  child: buildCategoriesList(),
-                ),
-                const SizedBox(height: 16, child: Divider()),
-              ],
-            ),
+              ),
             Expanded(
               child: buildProductsList(),
             ),
