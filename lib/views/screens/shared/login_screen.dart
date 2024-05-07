@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/providers/loading_provider.dart';
 import 'package:mi_tienda_app/controllers/services/notification_service.dart';
 import 'package:mi_tienda_app/global/input_regex_validation.dart';
+import 'package:mi_tienda_app/views/widgets/log_google_button.dart';
 import 'package:provider/provider.dart';
 //Widgets
 import '../../widgets/custom_input_fields.dart';
@@ -64,6 +65,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: _deviceHeight * 0.05,
               ),
               _loginButton(),
+              SizedBox(
+                height: _deviceHeight * 0.02,
+              ),
+              LogGoogleButton(
+                height: _deviceHeight * 0.065,
+                width: _deviceWidth * 0.65,
+              ),
               SizedBox(
                 height: _deviceHeight * 0.02,
               ),

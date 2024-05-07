@@ -73,7 +73,11 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
           _buildShippingInfoSection(customer),
           const Divider(),
           _buildCreditInfo(customer),
-          _buildUpdateCredentialsButton()
+          _authProvider.lastSignInProvider == google
+              ? const SizedBox(
+                  height: 10,
+                )
+              : _buildUpdateCredentialsButton()
         ],
       ),
     );

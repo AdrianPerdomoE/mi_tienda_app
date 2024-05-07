@@ -2,17 +2,28 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mi_tienda_app/global/placeholder_images_urls.dart';
 //services
 import '../services/user_database_service.dart';
 import '../services/navigation_service.dart';
 //models
 import '../../models/store_user.dart';
 
+const String google = 'google.com';
+const String email = 'password';
+
 class AuthenticationProvider extends ChangeNotifier {
   late final FirebaseAuth _auth;
   late final UserDatabaseService _databaseService;
   late final NavigationService _navigationService;
   late IUser user;
+
+  String? lastSignInProvider;
+  final List<String> scopes = <String>[
+    'email',
+  ];
+
   AuthenticationProvider() {
     _auth = FirebaseAuth.instance;
     _navigationService = GetIt.instance.get<NavigationService>();
@@ -21,6 +32,12 @@ class AuthenticationProvider extends ChangeNotifier {
       if (user != null) {
         _databaseService.getUser(user.uid).then((value) {
           if (value != null) {
+            String lastSignInProvider = user.providerData.last.providerId;
+            if (lastSignInProvider == google) {
+              this.lastSignInProvider = google;
+            } else {
+              this.lastSignInProvider = email;
+            }
             this.user = value;
             notifyListeners();
             _navigationService
@@ -62,6 +79,7 @@ class AuthenticationProvider extends ChangeNotifier {
   Future<void> logOut() async {
     try {
       await _auth.signOut();
+      lastSignInProvider = null;
     } catch (e) {
       print(e);
     }
@@ -115,6 +133,31 @@ class AuthenticationProvider extends ChangeNotifier {
       } else {
         print("Error al actualizar la contraseña: ${e}");
       }
+    }
+  }
+
+  Future<bool> logWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser =
+          await GoogleSignIn(scopes: scopes).signIn();
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      UserCredential user = await _auth.signInWithCredential(credential);
+      if (user.additionalUserInfo!.isNewUser) {
+        String imageUrl =
+            user.user!.photoURL ?? PlaceholderImagesUrls.png150Image;
+        _databaseService.createCustomer(user.user!.uid, user.user!.displayName!,
+            user.user!.email!, imageUrl, "");
+        return true;
+      }
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 }
