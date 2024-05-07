@@ -1,11 +1,13 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mi_tienda_app/controllers/services/categories_database_service.dart';
 import 'package:mi_tienda_app/controllers/services/products_database_service.dart';
 import 'package:mi_tienda_app/global/input_regex_validation.dart';
 import 'package:mi_tienda_app/global/placeholder_images_urls.dart';
+
 import 'package:mi_tienda_app/models/category.dart';
-import 'package:mi_tienda_app/views/widgets/custom_input_fields.dart';
+
 //Widgets
 import 'editable_image_field.dart';
 
@@ -19,6 +21,8 @@ class CreateProductDialog extends StatefulWidget {
 class _CreateProductDialogState extends State<CreateProductDialog> {
   final ProductsDatabaseService _productsDatabaseService =
       GetIt.instance.get<ProductsDatabaseService>();
+  final CategoriesDatabaseService _categoriesDatabaseService =
+      GetIt.instance.get<CategoriesDatabaseService>();
   PlatformFile? _image;
   final _formKey = GlobalKey<FormState>();
 
@@ -28,7 +32,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
   double discount = 0;
   int stock = 0;
 
-  Category? category;
+  Category? currentcategory;
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -45,8 +49,8 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
             if (_formKey.currentState!.validate() && _image != null) {
               _formKey.currentState!.save();
               _productsDatabaseService
-                  .add(name, description, _image!, price, category!.id, stock,
-                      discount)
+                  .add(name, description, _image!, price, currentcategory!.id,
+                      stock, discount)
                   .then((value) => Navigator.of(context).pop());
             }
           },
@@ -57,12 +61,13 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
       content: Form(
         key: _formKey,
         child: SizedBox(
-          height: 400,
+          height: 500,
           width: 600,
           child: ListView(
             children: [
               _imageField(),
               TextFormField(
+                //Campo de nombre
                 decoration: const InputDecoration(
                   hintText: 'Nombre del producto',
                   prefixIcon: Icon(Icons.shopping_bag),
@@ -73,6 +78,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                 validator: (value) => InputRegexValidator.validateName(name),
               ),
               TextFormField(
+                //campo de descripcion
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.production_quantity_limits_sharp),
                   hintText: 'Descripción',
@@ -82,6 +88,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                     InputRegexValidator.validateTextArea(value!),
               ),
               TextFormField(
+                //campó de precio
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.attach_money),
                   hintText: 'Precio',
@@ -91,13 +98,14 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                     InputRegexValidator.validateAmount(value!),
               ),
               TextFormField(
+                //campo de descuento
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.money_off),
                   hintText: 'Descuento',
                 ),
                 onSaved: (newValue) => discount = double.parse(newValue!),
                 validator: (value) =>
-                    InputRegexValidator.validateAmount(value!),
+                    InputRegexValidator.validateDiscount(value!),
               ),
               TextFormField(
                 decoration: const InputDecoration(
@@ -108,11 +116,68 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                 validator: (value) =>
                     InputRegexValidator.validateAmount(value!),
               ),
+              FutureBuilder(
+                future: _categoriesDatabaseService.getCategories(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return const CircularProgressIndicator();
+                    case ConnectionState.active || ConnectionState.done:
+                      if (!snapshot.hasData) {
+                        return const Text('No hay datos');
+                      }
+                      if (snapshot.hasError) {
+                        return const Text('Error');
+                      }
+                      final categories = snapshot.data as List<Category>;
+                      if (categories.isEmpty) {
+                        return const Text('No hay categorías');
+                      }
+                      return DropdownButtonFormField<Category>(
+                        menuMaxHeight: 300,
+                        borderRadius: BorderRadius.circular(10),
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.category),
+                          hintText: 'Categoría',
+                        ),
+                        value: currentcategory,
+                        onChanged: (newValue) {
+                          setState(() {
+                            currentcategory = newValue;
+                          });
+                        },
+                        items: _buildCategoryDropdownItems(categories),
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Seleccione una categoría';
+                          }
+                          return null;
+                        },
+                      );
+
+                    case ConnectionState.none:
+                      return const Text('No hay conexión');
+                  }
+                },
+              )
             ],
           ),
         ),
       ),
     );
+  }
+
+  List<DropdownMenuItem<Category>> _buildCategoryDropdownItems(
+      List<Category> categories) {
+    return categories.map((category) {
+      return DropdownMenuItem<Category>(
+        alignment: Alignment.center,
+        value: category,
+        child: Text(
+          category.name,
+        ),
+      );
+    }).toList();
   }
 
   Widget _imageField() {

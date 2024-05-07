@@ -107,4 +107,14 @@ class InputRegexValidator {
     }
     return null;
   }
+
+  static String? validateDiscount(String value) {
+    // Método que valida un número
+    if (value.isEmpty) {
+      return 'El campo es requerido';
+    } else if (double.parse(value) < 0 || double.parse(value) >= 1) {
+      return 'Ingresa un valor entre 0 y 1';
+    }
+    return null;
+  }
 }

@@ -89,28 +89,19 @@ class ProductsDatabaseService {
     }
   }
 
-  Future<bool> update(
-      String id,
-      String name,
-      String description,
-      String imageUrl,
-      double price,
-      String categoryId,
-      bool hidden,
-      int stock,
-      double discount) async {
-    var product = {
-      "name": name,
-      "description": description,
-      "imageUrl": imageUrl,
-      "price": price,
-      "categoryId": categoryId,
-      "hidden": hidden,
-      "stock": stock,
-      "discount": discount
-    };
+  Future<bool> update(Product updatedProduct, PlatformFile? newImage) async {
+    if (newImage != null) {
+      String? imageUrl = await _cloudStorageService
+          .saveDistributorImageToStorage(updatedProduct.id, newImage);
+      if (imageUrl != null) {
+        updatedProduct.imageUrl = imageUrl;
+      }
+    }
     try {
-      await _db.collection(_productsCollection).doc(id).update(product);
+      await _db
+          .collection(_productsCollection)
+          .doc(updatedProduct.id)
+          .update(updatedProduct.toJson());
       return true;
     } catch (e) {
       return false;

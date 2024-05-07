@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../global/input_regex_validation.dart';
 
-class CustomTextFormField extends StatelessWidget {
+class CustomTextFormField extends StatefulWidget {
   // Class que define un campo de texto personalizado
   final Function(String)
       onSaved; // Funcion que se ejecuta cuando se guarda el campo
@@ -12,9 +12,9 @@ class CustomTextFormField extends StatelessWidget {
   final String hintText; // Texto que se muestra como pista
   final bool obscureText; // Indica si el texto es visible o no
   final TextInputType? keyboardType; // Tipo de teclado
-  final int? maxLines; // Numero maximo de lineas
-  late AppDataProvider appDataProvider;
-  CustomTextFormField({
+  final int? maxLines;
+
+  const CustomTextFormField({
     super.key,
     required this.onSaved,
     required this.validator,
@@ -23,17 +23,26 @@ class CustomTextFormField extends StatelessWidget {
     this.keyboardType,
     this.maxLines,
   });
+
+  @override
+  State<CustomTextFormField> createState() => _CustomTextFormFieldState();
+}
+
+class _CustomTextFormFieldState extends State<CustomTextFormField> {
+  // Numero maximo de lineas
+  late AppDataProvider appDataProvider;
+
   @override
   Widget build(BuildContext context) {
     appDataProvider = context.watch<AppDataProvider>();
     return TextFormField(
       cursorColor: appDataProvider.accentColor,
-      onSaved: (value) => onSaved(value!),
-      keyboardType: keyboardType ?? TextInputType.text,
-      obscureText: obscureText,
-      maxLines: maxLines,
+      onSaved: (value) => widget.onSaved(value!),
+      keyboardType: widget.keyboardType ?? TextInputType.text,
+      obscureText: widget.obscureText,
+      maxLines: widget.maxLines,
       decoration: InputDecoration(
-        hintText: hintText,
+        hintText: widget.hintText,
         hintStyle: TextStyle(color: Colors.grey[700]),
         fillColor: appDataProvider.backgroundColor,
         filled: true,
@@ -50,7 +59,7 @@ class CustomTextFormField extends StatelessWidget {
           ),
         ),
       ),
-      validator: (value) => validator(value!),
+      validator: (value) => widget.validator(value!),
     );
   }
 }

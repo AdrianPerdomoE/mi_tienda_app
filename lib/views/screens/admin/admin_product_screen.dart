@@ -179,7 +179,7 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
         onAdd: () {
           showDialog(
             context: context,
-            builder: (context) => CreateProductDialog(),
+            builder: (context) => const CreateProductDialog(),
           );
         },
         children: [

@@ -25,6 +25,21 @@ class CategoriesDatabaseService {
     });
   }
 
+  Future<List<Category>> getCategories() async {
+    var snapshot = await _db.collection(_categoriesCollection).get();
+    List<Category> categories = snapshot.docs
+        .map((doc) => Category.fromJson({...doc.data(), "id": doc.id}))
+        .toList();
+    categories.sort((a, b) {
+      if (a.order == b.order) {
+        return a.name.compareTo(b.name);
+      } else {
+        return a.order.compareTo(b.order);
+      }
+    });
+    return categories;
+  }
+
   Future<bool> add(String name, int order) async {
     var category = {
       "name": name,
