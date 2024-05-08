@@ -1,0 +1,28 @@
+
+name: Build apk and publish to GitHub Releases 
+
+on:
+ release:
+   types: [created] 
+
+jobs:
+ build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
+      with:
+        distribution:  'adopt'
+        java-version: '17'
+    - uses: subosito/flutter-action@v2
+      with:
+          channel: 'stable'
+    - run: flutter pub get
+    - run: flutter format --set-exit-if-changed .
+    - run: flutter analyze .
+    - run: flutter build apk
+    - name: Upload APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: app-release-${{ github.ref }}
+        path: build/app/outputs/flutter-apk/app-release.apk

@@ -268,6 +268,7 @@ class _DistributorInfoScreenState extends State<DistributorInfoScreen> {
               onDelete: () {
                 setState(() {
                   widget.distributor.comments.remove(comment);
+                  _distributorDatabaseService.updateDistributor(widget.distributor);
                 });
               },
             ))
