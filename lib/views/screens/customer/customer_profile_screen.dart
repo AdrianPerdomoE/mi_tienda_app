@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mi_tienda_app/global/input_regex_validation.dart';
 
 import 'package:mi_tienda_app/models/store_user.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +73,11 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
           _buildShippingInfoSection(customer),
           const Divider(),
           _buildCreditInfo(customer),
-          _buildUpdateCredentialsButton()
+          _authProvider.lastSignInProvider == google
+              ? const SizedBox(
+                  height: 10,
+                )
+              : _buildUpdateCredentialsButton()
         ],
       ),
     );
@@ -117,11 +122,6 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           StyledElevatedButton(
-              label: 'Cambiar Correo',
-              onPressed: () {
-                deployUpdateEmailDialog(context);
-              }),
-          StyledElevatedButton(
               label: 'Cambiar contraseña',
               onPressed: () {
                 deployUpdatePasswordDialog(context);
@@ -138,24 +138,6 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
     _userDatabaseService.updateUserData(customer);
   }
 
-  void deployUpdateEmailDialog(BuildContext context) {
-    reAuthenticateWithPassword(context).then((authenticated) {
-      if (!authenticated) return;
-      showDialog(
-          context: context,
-          builder: (context) => UpdateCredentialsDialog(
-                title: 'Cambiar correo electrónico',
-                obscureText: false,
-                regex: r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
-                label: 'Correo electrónico',
-                confirmationRequired: true,
-                onUpdate: ({required newValue}) {
-                  _authProvider.updateEmail(newValue);
-                },
-              ));
-    });
-  }
-
   void deployUpdatePasswordDialog(BuildContext context) {
     reAuthenticateWithPassword(context).then((authenticated) {
       if (!authenticated) return;
@@ -164,7 +146,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
         builder: (context) => UpdateCredentialsDialog(
             title: 'Cambiar contraseña',
             obscureText: true,
-            regex: r".{8,}",
+            validator: InputRegexValidator.validatePassword,
             label: 'Contraseña',
             confirmationRequired: true,
             onUpdate: ({required newValue}) {
@@ -188,6 +170,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
       isEditing: isEditingPersonalData,
       children: [
         TogglableField(
+          validator: InputRegexValidator.validateName,
           label: 'Nombre',
           value: customer.name,
           icon: Icons.person_pin,
@@ -212,6 +195,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
       isEditing: isEditingShippingInfo,
       children: [
         TogglableField(
+          validator: InputRegexValidator.validateAddress,
           label: 'Dirección de residencia',
           value: customer.address,
           icon: Icons.house,
@@ -227,6 +211,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
       title: 'Datos de Contacto',
       children: [
         TogglableField(
+          validator: InputRegexValidator.validateEmail,
           label: 'Correo electrónico',
           value: customer.email,
           icon: Icons.mail,
@@ -239,6 +224,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   Widget _buildCreditInfo(Customer customer) {
     return Section(title: "Datos de credito", children: [
       TogglableField(
+        validator: InputRegexValidator.validateAmount,
         label: "Monto maximo a fiar",
         value: customer.maxCredit.toString(),
         icon: Icons.monetization_on_sharp,

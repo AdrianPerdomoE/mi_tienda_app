@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mi_tienda_app/controllers/services/app_service.dart';
+import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
+import 'package:mi_tienda_app/views/screens/customer/customer_products_screen.dart';
 import 'customer_profile_screen.dart';
+import 'package:provider/provider.dart';
 //widgets
 import "../../widgets/logout_button.dart";
 
@@ -12,21 +14,19 @@ class CustomerHomeScreen extends StatefulWidget {
 }
 
 class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
-  final AppService appService = AppService();
+  late AppDataProvider appDataProvider;
   int _currentIndex = 0;
   final List<Widget> _screens = [
-    Container(
-      color: Colors.red,
-      child: const Text("Inicio"),
-    ),
+    const CustomerProductsScreen(),
     const CustomerProfileScreen(),
   ];
   @override
   Widget build(BuildContext context) {
+    appDataProvider = context.watch<AppDataProvider>();
     return Scaffold(
         appBar: AppBar(
           actions: const [LogoutButton()],
-          title: Text(appService.appName),
+          title: Text(appDataProvider.appName),
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,

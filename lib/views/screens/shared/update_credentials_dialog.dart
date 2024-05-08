@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:mi_tienda_app/global/input_regex_validation.dart';
 //
+import '../../../controllers/services/notification_service.dart';
 import '../../widgets/custom_input_fields.dart';
 
 class UpdateCredentialsDialog extends StatefulWidget {
-  final String title;
-  final String label;
-  final Function({required String newValue}) onUpdate;
-  final bool confirmationRequired;
-  final bool obscureText;
-  final String regex;
+  // clase que define un dialogo para actualizar credenciales
+  final String title; // Titulo del dialogo
+  final String label; // Etiqueta del campo a actualizar
+  final Function({required String newValue})
+      onUpdate; // Funcion que se ejecuta al actualizar
+  final bool confirmationRequired; // Indica si se requiere confirmacion
+  final bool obscureText; // Indica si el texto es visible o no
+  final StringOrNullFunction validator; // Funcion que valida el texto ingresado
   const UpdateCredentialsDialog(
       {super.key,
       required this.title,
       required this.label,
       required this.confirmationRequired,
       required this.onUpdate,
-      required this.regex,
+      required this.validator,
       required this.obscureText});
 
   @override
@@ -47,14 +52,24 @@ class _UpdateCredentialsDialogState extends State<UpdateCredentialsDialog> {
         TextButton(
           onPressed: () {
             if (formKey.currentState!.validate()) {
-              formKey.currentState!.save();
-              if (widget.confirmationRequired &&
+              // Si el formulario es valido
+              formKey.currentState!
+                  .save(); // Se guarda el estado del formulario
+              if (widget
+                      .confirmationRequired && // Si se requiere confirmacion y los valores no coinciden
                   newValue != confirmationValue) {
-                print('Los valores no coinciden');
+                GetIt.instance
+                    .get<NotificationService>()
+                    .showNotificationBottom(
+                        context,
+                        'Los valores no coinciden',
+                        NotificationType
+                            .error); // Se muestra una notificacion de error
                 return;
               }
-              widget.onUpdate(newValue: newValue);
-              Navigator.of(context).pop();
+              widget.onUpdate(
+                  newValue: newValue); // Se ejecuta la funcion de actualizacion
+              Navigator.of(context).pop(); // Se cierra el dialogo
             }
           },
           child: const Text('Guardar'),
@@ -78,7 +93,7 @@ class _UpdateCredentialsDialogState extends State<UpdateCredentialsDialog> {
                 onSaved: (value) {
                   newValue = value;
                 },
-                regex: widget.regex,
+                validator: widget.validator,
                 hintText: widget.label,
                 obscureText: widget.obscureText),
             if (widget.confirmationRequired)
@@ -86,7 +101,7 @@ class _UpdateCredentialsDialogState extends State<UpdateCredentialsDialog> {
                   onSaved: (value) {
                     confirmationValue = value;
                   },
-                  regex: widget.regex,
+                  validator: widget.validator,
                   hintText: 'Confirmar ${widget.label.toLowerCase()}',
                   obscureText: widget.obscureText),
           ],
