@@ -22,5 +22,5 @@ jobs:
     - name: Upload APK
       uses: actions/upload-artifact@v2
       with:
-        name: app-release-${{ github.ref }}
+        name: app-release-${{github.ref_name}}
         path: build/app/outputs/flutter-apk/app-release.apk
