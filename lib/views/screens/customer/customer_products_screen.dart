@@ -35,6 +35,10 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
       });
     });
 
+    setState(() {
+      searchValue = productsProvider.nameFilter;
+    });
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(10),

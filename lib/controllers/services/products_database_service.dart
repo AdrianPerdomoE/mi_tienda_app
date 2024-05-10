@@ -13,10 +13,6 @@ class ProductsDatabaseService {
   final CloudStorageService _cloudStorageService =
       GetIt.instance.get<CloudStorageService>();
 
-  ProductsDatabaseService() {
-    getAllProducts();
-  }
-
   void getAllProducts() {
     _products = _db
         .collection(_productsCollection)

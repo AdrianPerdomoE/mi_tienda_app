@@ -6,35 +6,38 @@ import 'package:mi_tienda_app/models/product.dart';
 class ProductsProvider extends ChangeNotifier {
   late final ProductsDatabaseService _productsDatabaseService;
   Stream<List<Product>> get products => _productsDatabaseService.products;
-  List<String> categoriesToFilter = [];
-  
+  String nameFilter = '';
+  List<String> categoriesFilter = [];
+
   ProductsProvider() {
+    _productsDatabaseService = GetIt.instance.get<ProductsDatabaseService>();
     getProducts();
   }
 
   void getProducts() {
-    _productsDatabaseService = GetIt.instance.get<ProductsDatabaseService>();
+    _productsDatabaseService.getAllProducts();
     notifyListeners();
   }
 
   void filterProductsByName(String name) {
-    _productsDatabaseService.filterProductsByName(name);
+    nameFilter = name;
+    _productsDatabaseService.filterProductsByName(nameFilter);
     notifyListeners();
   }
 
   void addCategoryToFilter(String categoryId) {
-    if (!categoriesToFilter.contains(categoryId)) {
-      categoriesToFilter.add(categoryId);
+    if (!categoriesFilter.contains(categoryId)) {
+      categoriesFilter.add(categoryId);
     }
-    _productsDatabaseService.filterProductsByCategories(categoriesToFilter);
+    _productsDatabaseService.filterProductsByCategories(categoriesFilter);
     notifyListeners();
   }
 
   void removeCategoryToFilter(String categoryId) {
-    if (categoriesToFilter.contains(categoryId)) {
-      categoriesToFilter.remove(categoryId);
+    if (categoriesFilter.contains(categoryId)) {
+      categoriesFilter.remove(categoryId);
     }
-    _productsDatabaseService.filterProductsByCategories(categoriesToFilter);
+    _productsDatabaseService.filterProductsByCategories(categoriesFilter);
     notifyListeners();
   }
 }
