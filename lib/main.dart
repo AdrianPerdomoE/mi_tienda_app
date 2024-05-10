@@ -1,3 +1,4 @@
+//packages
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
 import 'package:provider/provider.dart';
@@ -8,7 +9,6 @@ import 'views/screens/admin/admin_home_screen.dart';
 import 'views/screens/shared/login_screen.dart';
 import './views/screens/shared/splash_screen.dart';
 import 'views/screens/shared/register_screen.dart';
-//packages
 
 //services
 import './controllers/services/navigation_service.dart';
