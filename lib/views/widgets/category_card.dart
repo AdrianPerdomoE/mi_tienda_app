@@ -23,6 +23,10 @@ class _CategoryCardWidgetState extends State<CategoryCardWidget> {
     appDataProvider = context.watch<AppDataProvider>();
     productsProvider = context.watch<ProductsProvider>();
 
+    setState(() {
+      isSelected = productsProvider.categoriesFilter.contains(widget.category.id);
+    });
+
     return Padding(
       padding: const EdgeInsets.only(right: 4),
       child: InkWell(

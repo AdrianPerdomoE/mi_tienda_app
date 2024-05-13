@@ -5,36 +5,78 @@ import 'package:mi_tienda_app/models/product.dart';
 
 class ProductsProvider extends ChangeNotifier {
   late final ProductsDatabaseService _productsDatabaseService;
-  Stream<List<Product>> get products => _productsDatabaseService.products;
-  List<String> categoriesToFilter = [];
-  
+  Stream<List<Product>> products = const Stream.empty();
+  String searchFilter = '';
+  List<String> categoriesFilter = [];
+  bool onlyVisible = true;
+
   ProductsProvider() {
-    getProducts();
+    _productsDatabaseService = GetIt.instance.get<ProductsDatabaseService>();
   }
 
   void getProducts() {
-    _productsDatabaseService = GetIt.instance.get<ProductsDatabaseService>();
+    products = _productsDatabaseService.getProducts();
+
+    if (categoriesFilter.isNotEmpty) {
+      _filterProductsByCategories();
+    }
+
+    if (searchFilter.isNotEmpty) {
+      _filterProductsByName();
+    }
+
+    if (onlyVisible) {
+      _filterProductsByVisibility();
+    }
+
     notifyListeners();
   }
 
-  void filterProductsByName(String name) {
-    _productsDatabaseService.filterProductsByName(name);
-    notifyListeners();
+  void setSearchFilter(String search) {
+    searchFilter = search;
+    getProducts();
   }
 
   void addCategoryToFilter(String categoryId) {
-    if (!categoriesToFilter.contains(categoryId)) {
-      categoriesToFilter.add(categoryId);
+    if (!categoriesFilter.contains(categoryId)) {
+      categoriesFilter.add(categoryId);
     }
-    _productsDatabaseService.filterProductsByCategories(categoriesToFilter);
-    notifyListeners();
+    getProducts();
   }
 
   void removeCategoryToFilter(String categoryId) {
-    if (categoriesToFilter.contains(categoryId)) {
-      categoriesToFilter.remove(categoryId);
+    if (categoriesFilter.contains(categoryId)) {
+      categoriesFilter.remove(categoryId);
     }
-    _productsDatabaseService.filterProductsByCategories(categoriesToFilter);
+    getProducts();
+  }
+
+  void resetCategoriesFilter() {
+    categoriesFilter = [];
+    getProducts();
+  }
+
+  void _filterProductsByName() {
+    products = products.map((products) {
+      return products
+          .where((product) =>
+              product.name.toLowerCase().contains(searchFilter.toLowerCase()))
+          .toList();
+    });
     notifyListeners();
+  }
+
+  void _filterProductsByCategories() {
+    products = products.map((products) {
+      return products
+          .where((product) => categoriesFilter.contains(product.categoryId))
+          .toList();
+    });
+  }
+
+  void _filterProductsByVisibility() {
+    products = products.map((products) {
+      return products.where((product) => !product.hidden).toList();
+    });
   }
 }
