@@ -56,6 +56,11 @@ class ProductsProvider extends ChangeNotifier {
     getProducts();
   }
 
+  void setOnlyVisible(bool value) {
+    onlyVisible = value;
+    getProducts();
+  }
+
   void _filterProductsByName() {
     products = products.map((products) {
       return products

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
+import 'package:mi_tienda_app/controllers/providers/products_provider.dart';
 import 'package:mi_tienda_app/controllers/services/categories_database_service.dart';
-import 'package:mi_tienda_app/controllers/services/products_database_service.dart';
 import 'package:mi_tienda_app/models/category.dart';
+import 'package:mi_tienda_app/views/widgets/category_card.dart';
 import 'package:mi_tienda_app/views/widgets/create_product_dialog.dart.dart';
 import 'package:mi_tienda_app/views/widgets/section_single_child_add_button.dart';
 //Widgets
@@ -22,23 +23,46 @@ class AdminProductScreen extends StatefulWidget {
 }
 
 class _AdminProductScreenState extends State<AdminProductScreen> {
-  String selectedCategory = 'Carnes';
+  int productsCount = 0;
+  String searchFilter = '';
+  List<String> categoriesFilter = [];
   String categoryName = '';
   late double _width;
   late double _height;
   final CategoriesDatabaseService _categoriesDatabaseService =
       GetIt.instance.get<CategoriesDatabaseService>();
 
-  final ProductsDatabaseService _productsDatabaseService =
-      GetIt.instance.get<ProductsDatabaseService>();
   late ScrollController _controller;
   late AppDataProvider appDataProvider;
+  late ProductsProvider productsProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    final productsProvider = context.read<ProductsProvider>();
+    productsProvider.getProducts();
+    productsProvider.setOnlyVisible(false);
+  }
+
   @override
   Widget build(BuildContext context) {
     appDataProvider = context.watch<AppDataProvider>();
+    productsProvider = context.watch<ProductsProvider>();
     _controller = PrimaryScrollController.of(context);
     _width = MediaQuery.of(context).size.width;
     _height = MediaQuery.of(context).size.height;
+
+    productsProvider.products.listen((products) {
+      setState(() {
+        productsCount = products.length;
+      });
+    });
+
+    setState(() {
+      searchFilter = productsProvider.searchFilter;
+      categoriesFilter = productsProvider.categoriesFilter;
+    });
+
     return _buildUi();
   }
 
@@ -57,40 +81,38 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
 
   Widget _buildSearch() {
     return Container(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 4,
-              offset: const Offset(0, 3),
-            ),
-          ],
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+      child: SearchBar(
+        controller: TextEditingController(text: searchFilter),
+        onChanged: (value) => searchFilter = value,
+        onSubmitted: (value) => productsProvider.setSearchFilter(searchFilter),
+        padding: const MaterialStatePropertyAll<EdgeInsets>(
+          EdgeInsets.symmetric(horizontal: 10),
         ),
-        child: ListTile(
-          title: TextField(
-            decoration: const InputDecoration(
-              hintText: 'Buscar producto...',
-              border: InputBorder.none,
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            // Abrir opciones de búsqueda
+          },
+        ),
+        trailing: [
+          if (searchFilter.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                searchFilter = '';
+                productsProvider.setSearchFilter(searchFilter);
+              },
             ),
-            onChanged: (value) {},
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () => productsProvider.setSearchFilter(searchFilter),
           ),
-          leading: IconButton(
-            icon: const Icon(
-              Icons.menu,
-              color: Colors.grey,
-            ),
-            onPressed: () {},
-          ),
-          trailing: IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search, color: Colors.grey),
-          ),
-        ));
+        ],
+        hintText: 'Buscar productos...',
+      ),
+    );
   }
 
   Widget _buildCategorySection() {
@@ -104,7 +126,7 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
           mainAxisSize: MainAxisSize.max,
           children: [
             SectionChildlessAddButton(
-              title: 'Categoría',
+              title: 'Categorías',
               onAdd: () {
                 _buildShowCategoryPopup(context);
               },
@@ -137,12 +159,11 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
       child: Container(
         width: _width,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: ListView.separated(
-          separatorBuilder: (context, index) => const SizedBox(width: 10),
+        child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {
-            return _categoryButton(label: snapshot.data![index].name);
+            return CategoryCardWidget(category: snapshot.data![index]);
           },
         ),
       ),
@@ -184,8 +205,7 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
         },
         children: [
           StreamBuilder(
-              stream:
-                  _productsDatabaseService.products as Stream<List<Product>>,
+              stream: productsProvider.products,
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:

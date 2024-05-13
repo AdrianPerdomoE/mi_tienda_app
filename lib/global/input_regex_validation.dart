@@ -17,6 +17,8 @@ class InputRegexValidator {
       r'^\w+(\s+\w+)*$'); // Expresión regular para un campo de texto, validando que inicie con una palabra y pueda tener más palabras separadas por espacios
   static final RegExp _ratingRegExp = RegExp(
       r'^[0-5]$'); // Expresión regular para una calificación, validando que sea un número entre 0 y 5
+  static final RegExp _numberRegExp = RegExp(
+      r'^[0-9]+(\.[0-9]+)?$'); // Expresión regular para un número, validando que sea un número entero o decimal
 
   static String? validateEmail(String email) {
     // Método que valida un correo electrónico
@@ -102,6 +104,8 @@ class InputRegexValidator {
     // Método que valida un número
     if (value.isEmpty) {
       return 'El campo es requerido';
+    } else if (!_numberRegExp.hasMatch(value)) {
+      return 'Ingresa un número válido';
     } else if (double.parse(value) < 0) {
       return 'Ingresa un valor mayor o igual a 0';
     }
@@ -112,6 +116,8 @@ class InputRegexValidator {
     // Método que valida un número
     if (value.isEmpty) {
       return 'El campo es requerido';
+    } else if (!_numberRegExp.hasMatch(value)) {
+      return 'Ingresa un número válido';
     } else if (double.parse(value) < 0 || double.parse(value) >= 1) {
       return 'Ingresa un valor entre 0 y 1';
     }

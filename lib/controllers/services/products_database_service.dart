@@ -74,7 +74,7 @@ class ProductsDatabaseService {
       String productId = productRef.id;
       //Upload image to storage
       String? imageUrl = await _cloudStorageService
-          .saveDistributorImageToStorage(productId, image);
+          .saveProductImageToStorage(productId, name, image);
       if (imageUrl != null) {
         await productRef.update({"imageUrl": imageUrl});
       }

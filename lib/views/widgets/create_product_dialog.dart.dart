@@ -1,12 +1,14 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mi_tienda_app/controllers/providers/products_provider.dart';
 import 'package:mi_tienda_app/controllers/services/categories_database_service.dart';
 import 'package:mi_tienda_app/controllers/services/products_database_service.dart';
 import 'package:mi_tienda_app/global/input_regex_validation.dart';
 import 'package:mi_tienda_app/global/placeholder_images_urls.dart';
 
 import 'package:mi_tienda_app/models/category.dart';
+import 'package:provider/provider.dart';
 
 //Widgets
 import 'editable_image_field.dart';
@@ -25,6 +27,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
       GetIt.instance.get<CategoriesDatabaseService>();
   PlatformFile? _image;
   final _formKey = GlobalKey<FormState>();
+  late ProductsProvider productsProvider;
 
   String name = '';
   String description = '';
@@ -35,6 +38,8 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
   Category? currentcategory;
   @override
   Widget build(BuildContext context) {
+    productsProvider = context.watch<ProductsProvider>();
+
     return AlertDialog(
       scrollable: true,
       actions: [
@@ -51,7 +56,10 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
               _productsDatabaseService
                   .add(name, description, _image!, price, currentcategory!.id,
                       stock, discount)
-                  .then((value) => Navigator.of(context).pop());
+                  .then((value) {
+                Navigator.of(context).pop();
+                productsProvider.getProducts();
+              });
             }
           },
           child: const Text('Agregar'),
@@ -72,10 +80,9 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                   hintText: 'Nombre del producto',
                   prefixIcon: Icon(Icons.shopping_bag),
                 ),
-                onSaved: (newValue) {
-                  name = newValue!;
-                },
-                validator: (value) => InputRegexValidator.validateName(name),
+                onSaved: (newValue) => name = newValue!,
+                validator: (value) =>
+                    InputRegexValidator.validateTextArea(value!),
               ),
               TextFormField(
                 //campo de descripcion

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/categories_provider.dart';
 import 'package:mi_tienda_app/models/category.dart';
 import 'package:mi_tienda_app/models/product.dart';
@@ -16,7 +15,6 @@ class CustomerProductsScreen extends StatefulWidget {
 }
 
 class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
-  late AppDataProvider appDataProvider;
   late CategoriesProvider categoriesProvider;
   late ProductsProvider productsProvider;
   int productsCount = 0;
@@ -32,7 +30,6 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    appDataProvider = context.watch<AppDataProvider>();
     categoriesProvider = context.watch<CategoriesProvider>();
     productsProvider = context.watch<ProductsProvider>();
 
@@ -82,6 +79,14 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
                 },
               ),
               trailing: [
+                if (searchFilter.isNotEmpty)
+                  IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      searchFilter = '';
+                      productsProvider.setSearchFilter(searchFilter);
+                    },
+                  ),
                 IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () =>

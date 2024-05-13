@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Product {
   String id;
   String name;
@@ -5,7 +7,7 @@ class Product {
   String imageUrl;
   double price;
   String categoryId;
-  DateTime creationDate;
+  Timestamp creationDate;
   bool hidden;
   int stock;
   double discount;
@@ -30,7 +32,7 @@ class Product {
         imageUrl = json['imageUrl'],
         price = json['price'],
         categoryId = json['categoryId'],
-        creationDate = DateTime.parse(json['creationDate']),
+        creationDate = json['creationDate'],
         hidden = json['hidden'],
         stock = json['stock'],
         discount = json['discount'];
@@ -42,7 +44,7 @@ class Product {
         'imageUrl': imageUrl,
         'price': price,
         'categoryId': categoryId,
-        'creationDate': creationDate.toString(),
+        'creationDate': creationDate,
         'hidden': hidden,
         'stock': stock,
         'discount': discount,
