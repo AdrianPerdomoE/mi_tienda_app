@@ -13,48 +13,47 @@ class ProductsDatabaseService {
   final CloudStorageService _cloudStorageService =
       GetIt.instance.get<CloudStorageService>();
 
-  void getAllProducts() {
-    _products = _db
+  Stream<List<Product>> getProducts() {
+    return _db
         .collection(_productsCollection)
-        .where("hidden", isEqualTo: false)
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
             .toList());
   }
 
-  void filterProductsByName(String name) {
-    if (name.isEmpty) {
-      getAllProducts();
-    } else {
-      _products = _db
-          .collection(_productsCollection)
-          .where("hidden", isEqualTo: false)
-          .snapshots()
-          .map((snapshot) {
-        return snapshot.docs
-            .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
-            .where((product) =>
-                product.name.toLowerCase().contains(name.toLowerCase()))
-            .toList();
-      });
-    }
-  }
+  // void filterProductsByName(String name) {
+  //   if (name.isEmpty) {
+  //     getAllProducts();
+  //   } else {
+  //     _products = _db
+  //         .collection(_productsCollection)
+  //         .where("hidden", isEqualTo: false)
+  //         .snapshots()
+  //         .map((snapshot) {
+  //       return snapshot.docs
+  //           .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
+  //           .where((product) =>
+  //               product.name.toLowerCase().contains(name.toLowerCase()))
+  //           .toList();
+  //     });
+  //   }
+  // }
 
-  void filterProductsByCategories(List<String> categoryIds) {
-    if (categoryIds.isEmpty) {
-      getAllProducts();
-    } else {
-      _products = _db
-          .collection(_productsCollection)
-          .where("hidden", isEqualTo: false)
-          .where("categoryId", whereIn: categoryIds)
-          .snapshots()
-          .map((snapshot) => snapshot.docs
-              .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
-              .toList());
-    }
-  }
+  // void filterProductsByCategories(List<String> categoryIds) {
+  //   if (categoryIds.isEmpty) {
+  //     getAllProducts();
+  //   } else {
+  //     _products = _db
+  //         .collection(_productsCollection)
+  //         .where("hidden", isEqualTo: false)
+  //         .where("categoryId", whereIn: categoryIds)
+  //         .snapshots()
+  //         .map((snapshot) => snapshot.docs
+  //             .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
+  //             .toList());
+  //   }
+  // }
 
   Future<bool> add(String name, String description, PlatformFile image,
       double price, String categoryId, int stock, double discount) async {

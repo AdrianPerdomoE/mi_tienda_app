@@ -19,9 +19,16 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
   late AppDataProvider appDataProvider;
   late CategoriesProvider categoriesProvider;
   late ProductsProvider productsProvider;
-
-  String searchValue = '';
   int productsCount = 0;
+  String searchFilter = '';
+  List<String> categoriesFilter = [];
+
+  @override
+  void initState() {
+    super.initState();
+    final productsProvider = context.read<ProductsProvider>();
+    productsProvider.getProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +43,8 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
     });
 
     setState(() {
-      searchValue = productsProvider.nameFilter;
+      searchFilter = productsProvider.searchFilter;
+      categoriesFilter = productsProvider.categoriesFilter;
     });
 
     return Scaffold(
@@ -60,10 +68,10 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
               height: 12,
             ),
             SearchBar(
-              controller: TextEditingController(text: searchValue),
-              onChanged: (value) => searchValue = value,
+              controller: TextEditingController(text: searchFilter),
+              onChanged: (value) => searchFilter = value,
               onSubmitted: (value) =>
-                  productsProvider.filterProductsByName(value),
+                  productsProvider.setSearchFilter(searchFilter),
               padding: const MaterialStatePropertyAll<EdgeInsets>(
                 EdgeInsets.symmetric(horizontal: 10),
               ),
@@ -77,7 +85,7 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
                 IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () =>
-                      productsProvider.filterProductsByName(searchValue),
+                      productsProvider.setSearchFilter(searchFilter),
                 ),
               ],
               hintText: 'Buscar productos...',
@@ -85,29 +93,45 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
             const SizedBox(
               height: 16,
             ),
-            if (searchValue.isEmpty)
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Categorías",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Categorías",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  SizedBox(
-                    height: 50,
-                    child: buildCategoriesList(),
-                  ),
-                  const SizedBox(height: 16, child: Divider()),
-                ],
-              ),
-            if (searchValue.isNotEmpty)
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    if (categoriesFilter.isNotEmpty)
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            productsProvider.resetCategoriesFilter();
+                          });
+                        },
+                        child: const Text("Limpiar filtros"),
+                      ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                SizedBox(
+                  height: 50,
+                  child: buildCategoriesList(),
+                ),
+                const SizedBox(height: 16, child: Divider()),
+              ],
+            ),
+            if (searchFilter.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Row(
@@ -123,8 +147,8 @@ class _CustomerProductsScreenState extends State<CustomerProductsScreen> {
                     TextButton(
                       onPressed: () {
                         setState(() {
-                          searchValue = '';
-                          productsProvider.filterProductsByName(searchValue);
+                          searchFilter = '';
+                          productsProvider.setSearchFilter(searchFilter);
                         });
                       },
                       child: const Text("Limpiar búsqueda"),
