@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
+import 'package:mi_tienda_app/views/screens/customer/customer_cart_screen.dart';
 import 'package:mi_tienda_app/views/screens/customer/customer_products_screen.dart';
 import 'customer_profile_screen.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,8 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
     const CustomerProductsScreen(),
-    const CustomerProfileScreen(),
+    const CustomerCartScreen(),
+    const CustomerProfileScreen()
   ];
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,10 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.store),
               label: "Inicio",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart),
+              label: "Carrito",
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
