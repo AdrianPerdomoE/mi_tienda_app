@@ -46,8 +46,6 @@ class _CustomerCartScreenState extends State<CustomerCartScreen> {
                     children: [
                       Text('Precio: \$99,000'),
                       const SizedBox(width: 8),
-                      Text('Cantidad: 2'),
-                      const SizedBox(width: 8),
                       Text('Subtotal: \$198,000'),
                     ],
                   ),
