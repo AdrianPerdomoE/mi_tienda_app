@@ -1,4 +1,4 @@
-import './cart.dart';
+import 'package:mi_tienda_app/models/cart_item.dart';
 import './order_states.dart';
 
 class Order {
