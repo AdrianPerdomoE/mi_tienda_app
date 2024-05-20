@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
+import 'package:mi_tienda_app/controllers/providers/cart_provider.dart';
+import 'package:mi_tienda_app/controllers/services/notification_service.dart';
 import 'package:mi_tienda_app/controllers/utils/amount_details.dart';
 import 'package:mi_tienda_app/controllers/utils/custom_formats.dart';
 import 'package:mi_tienda_app/models/cart_item.dart';
+import 'package:mi_tienda_app/views/widgets/cart_item_count_widget.dart';
 import 'package:provider/provider.dart';
 
 class CartItemWidget extends StatefulWidget {
@@ -15,6 +19,8 @@ class CartItemWidget extends StatefulWidget {
 
 class _CartItemWidgetState extends State<CartItemWidget> {
   late AppDataProvider appDataProvider;
+  late CartProvider cartProvider;
+  late NotificationService notificationService;
   late Map<String, double> dcValues;
   late double price;
   late double discount;
@@ -24,6 +30,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
   @override
   Widget build(BuildContext context) {
     appDataProvider = context.watch<AppDataProvider>();
+    cartProvider = context.watch<CartProvider>();
+    notificationService = GetIt.instance.get<NotificationService>();
     dcValues = discountValues(widget.cartItem.price, widget.cartItem.discount);
     price = dcValues['price']!;
     discount = dcValues['discount']!;
@@ -33,7 +41,12 @@ class _CartItemWidgetState extends State<CartItemWidget> {
     return ListTile(
       leading: Stack(
         children: [
-          Image.network(widget.cartItem.imageUrl),
+          Image.network(
+            widget.cartItem.imageUrl,
+            width: 60,
+            height: 60,
+            fit: BoxFit.contain,
+          ),
           if (discount != 0)
             Positioned(
               top: 0,
@@ -130,23 +143,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
           ),
         ],
       ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.remove),
-            onPressed: () {
-              // Implement the remove item logic here
-            },
-          ),
-          Text(widget.cartItem.quantity.toString()),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              // Implement the add item logic here
-            },
-          ),
-        ],
+      trailing: CartItemCountWidget(
+        cartItem: widget.cartItem,
       ),
     );
   }

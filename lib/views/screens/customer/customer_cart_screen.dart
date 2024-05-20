@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/cart_provider.dart';
 import 'package:mi_tienda_app/controllers/utils/custom_formats.dart';
-import 'package:mi_tienda_app/models/app_data.dart';
 import 'package:mi_tienda_app/models/cart.dart';
 import 'package:mi_tienda_app/models/cart_item.dart';
 import 'package:mi_tienda_app/views/widgets/cart_item_widget.dart';
@@ -48,7 +47,9 @@ class _CustomerCartScreenState extends State<CustomerCartScreen> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    cartProvider.clearCart();
+                  },
                   child: const Text("Vaciar carrito"),
                 ),
               ],
@@ -59,7 +60,7 @@ class _CustomerCartScreenState extends State<CustomerCartScreen> {
             child: StreamBuilder<Cart>(
               stream: cartProvider.cart,
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
+                if (snapshot.hasData && snapshot.data!.items.isNotEmpty) {
                   final Cart cart = snapshot.data!;
                   return ListView.builder(
                     scrollDirection: Axis.vertical,
@@ -84,45 +85,45 @@ class _CustomerCartScreenState extends State<CustomerCartScreen> {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            StreamBuilder<Object>(
-                stream: cartProvider.totalPrice,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  double total = snapshot.data as double;
-                  return Text(
-                    'Total: ${toCOP(total)}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+        child: StreamBuilder<double>(
+          stream: cartProvider.totalPrice,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const SizedBox.shrink();
+            }
+            double totalPrice = snapshot.data!;
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Total: ${toCOP(totalPrice)}',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(horizontal: 16),
                     ),
-                  );
-                }),
-            ElevatedButton(
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all(
-                  const EdgeInsets.symmetric(horizontal: 16),
+                    backgroundColor: MaterialStateProperty.all(
+                      appDataProvider.primaryColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    // Implement the checkout logic here
+                  },
+                  child: Text(
+                    'Confirmar compra',
+                    style: TextStyle(
+                      color: appDataProvider.backgroundColor,
+                    ),
+                  ),
                 ),
-                backgroundColor: MaterialStateProperty.all(
-                  appDataProvider.primaryColor,
-                ),
-              ),
-              onPressed: () {
-                // Implement the checkout logic here
-              },
-              child: Text(
-                'Confirmar compra',
-                style: TextStyle(
-                  color: appDataProvider.backgroundColor,
-                ),
-              ),
-            ),
-          ],
+              ],
+            );
+          }
         ),
       ),
     );

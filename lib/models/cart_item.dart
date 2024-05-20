@@ -17,10 +17,10 @@ class CartItem {
   CartItem.fromJson(Map<String, dynamic> json)
       : productId = json['productId'],
         productName = json['productName'],
-        price = json['price'],
+        price = (json['price'] as num).toDouble(),
         quantity = json['quantity'],
         imageUrl = json['imageUrl'],
-        discount = json['discount'];
+        discount = (json['discount'] as num).toDouble();
 
   toJson() {
     return {

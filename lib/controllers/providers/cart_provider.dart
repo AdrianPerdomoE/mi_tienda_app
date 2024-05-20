@@ -1,61 +1,90 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:mi_tienda_app/controllers/services/cart_database_service.dart';
+import 'package:mi_tienda_app/controllers/services/products_database_service.dart';
 import 'package:mi_tienda_app/models/cart.dart';
 import 'package:mi_tienda_app/models/cart_item.dart';
+import 'package:mi_tienda_app/models/product.dart';
 
 class CartProvider extends ChangeNotifier {
-  Stream<Cart> cart = Stream.value(Cart(items: []));
-  Stream<int> cartCount = Stream.value(0);
-  Stream<double> totalPrice = Stream.value(0);
+  late final CartDatabaseService _cartDatabaseService;
+  late final ProductsDatabaseService _productsDatabaseService;
+  Stream<Cart> cart = const Stream.empty();
+  Stream<int> itemsCount = const Stream.empty();
+  Stream<double> totalPrice = const Stream.empty();
 
   CartProvider() {
-    getCart();
+    _cartDatabaseService = GetIt.instance.get<CartDatabaseService>();
+    _productsDatabaseService = GetIt.instance.get<ProductsDatabaseService>();
   }
 
   void getCart() {
-    cart = Stream.value(Cart(items: [
-      CartItem(
-        productId: "1",
-        productName: "CEPILLO SECADOR RED FLAG X 1 UD",
-        price: 39990,
-        quantity: 1,
-        imageUrl:
-            "https://stockimages.tiendasd1.com/stockimages.tiendasd1.com/kobastockimages/IMAGENES/12004383.png",
-        discount: 0.15,
-      ),
-      CartItem(
-        productId: "2",
-        productName: "SALCHICHA VIENA VIANDÉ 150 G",
-        price: 3190,
-        quantity: 2,
-        imageUrl:
-            "https://stockimages.tiendasd1.com/stockimages.tiendasd1.com/kobastockimages/IMAGENES/12000314.png",
-        discount: 0.3,
-      ),
-      CartItem(
-        productId: "3",
-        productName: "AVENA ALPINA VASO 250 ML",
-        price: 3190,
-        quantity: 5,
-        imageUrl:
-            "https://stockimages.tiendasd1.com/stockimages.tiendasd1.com/kobastockimages/IMAGENES/12004951.png",
-        discount: 0,
-      ),
-    ]));
-    // get cart from database
-    getCartCount();
-    getTotal();
+    cart = _cartDatabaseService.getCart();
+    getCartItemsCount();
+    getCartTotalPrice();
     notifyListeners();
   }
 
-  void getCartCount() {
-    // get cart count from database
-    cartCount = Stream.value(8);
-    notifyListeners();
+  void getCartItemsCount() {
+    itemsCount = _cartDatabaseService.getCartItemsCount();
   }
 
-  void getTotal() {
-    // get total from database
-    totalPrice = Stream.value(600000);
-    notifyListeners();
+  void getCartTotalPrice() {
+    totalPrice = _cartDatabaseService.getCartTotalPrice();
+  }
+
+  Stream<CartItem> getCartItem(String productId) {
+    return _cartDatabaseService.getCartItem(productId);
+  }
+
+  Future<bool> isProductInCart(String productId) async {
+    return await _cartDatabaseService.isProductInCart(productId);
+  }
+
+  // Verifica si un producto existe y tiene stock (stock > 0)
+  Future<Product> _verifyProduct(String productId) async {
+    final product = await _productsDatabaseService.getProduct(productId);
+    if (product == null) {
+      throw Exception("Producto no encontrado.");
+    } else if (product.stock < 1) {
+      throw Exception("No hay unidades disponibles de este producto.");
+    } else if (await _cartDatabaseService.isThereStock(
+            productId, product.stock) ==
+        false) {
+      throw Exception(
+          "No hay más de ${product.stock} unidades disponibles de este producto.");
+    } else {
+      return product;
+    }
+  }
+
+  Future<void> addItemToCart(String productId) async {
+    try {
+      final product = await _verifyProduct(productId);
+      await _cartDatabaseService.addItemToCart(product);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> removeItemFromCart(String productId) async {
+    await _cartDatabaseService.removeItemFromCart(productId);
+  }
+
+  Future<void> increaseOneItemToCart(String productId) async {
+    try {
+      await _verifyProduct(productId);
+      await _cartDatabaseService.intOrDecItemQuantity(productId, 1);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> decreaseOneItemFromCart(String productId) async {
+    await _cartDatabaseService.intOrDecItemQuantity(productId, -1);
+  }
+
+  Future<void> clearCart() async {
+    await _cartDatabaseService.clearCart();
   }
 }

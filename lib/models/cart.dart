@@ -15,4 +15,22 @@ class Cart {
       "items": items.map((item) => item.toJson()).toList(),
     };
   }
+
+  int get totalItems {
+    int totalItems = 0;
+    for (var item in items) {
+      totalItems += item.quantity;
+    }
+    return totalItems;
+  }
+
+  double get totalPrice {
+    double totalPrice = 0;
+    for (var item in items) {
+      double discount = item.price * item.discount;
+      double price = item.price - discount;
+      totalPrice += price * item.quantity;
+    }
+    return totalPrice;
+  }
 }

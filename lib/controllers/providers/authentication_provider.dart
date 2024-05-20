@@ -87,6 +87,10 @@ class AuthenticationProvider extends ChangeNotifier {
     try {
       await _auth.signOut();
       lastSignInProvider = null;
+
+      if (GetIt.instance.isRegistered<CartDatabaseService>()) {
+        GetIt.instance.unregister<CartDatabaseService>();
+      }
     } catch (e) {
       print(e);
     }
@@ -99,9 +103,6 @@ class AuthenticationProvider extends ChangeNotifier {
         email: user.email,
         password: password,
       );
-      if (GetIt.instance.isRegistered<CartDatabaseService>()) {
-        GetIt.instance.unregister<CartDatabaseService>();
-      }
       await _auth.currentUser!.reauthenticateWithCredential(credential);
       return true;
     } catch (e) {

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
+import 'package:mi_tienda_app/controllers/providers/cart_provider.dart';
+import 'package:mi_tienda_app/controllers/services/notification_service.dart';
 import 'package:mi_tienda_app/controllers/utils/amount_details.dart';
 import 'package:mi_tienda_app/controllers/utils/custom_formats.dart';
+import 'package:mi_tienda_app/models/cart_item.dart';
 import 'package:mi_tienda_app/models/product.dart';
+import 'package:mi_tienda_app/views/widgets/cart_item_count_widget.dart';
 import 'package:provider/provider.dart';
 
 class ProductCardWidget extends StatefulWidget {
@@ -15,14 +20,43 @@ class ProductCardWidget extends StatefulWidget {
 
 class _ProductCardWidgetState extends State<ProductCardWidget> {
   late AppDataProvider appDataProvider;
+  late CartProvider cartProvider;
+  late NotificationService notificationService;
   late Map<String, double> dcValues;
   late double price;
   late double discount;
   late double finalPrice;
 
+  notificationSuccess(String message) {
+    notificationService.showNotificationBottom(
+      context,
+      message,
+      NotificationType.success,
+    );
+  }
+
+  notificationError(String message) {
+    notificationService.showNotificationBottom(
+      context,
+      message,
+      NotificationType.error,
+    );
+  }
+
+  _addToCart() async {
+    try {
+      await cartProvider.addItemToCart(widget.product.id);
+      notificationSuccess('Producto añadido al carrito.');
+    } catch (e) {
+      notificationError(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     appDataProvider = context.watch<AppDataProvider>();
+    cartProvider = context.watch<CartProvider>();
+    notificationService = GetIt.instance.get<NotificationService>();
     dcValues = discountValues(widget.product.price, widget.product.discount);
     price = dcValues['price']!;
     discount = dcValues['discount']!;
@@ -139,35 +173,44 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10, bottom: 12),
-              child: Container(
-                height: 30,
-                alignment: Alignment.center,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: appDataProvider.primaryColor,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 0,
-                    ),
-                  ),
-                  onPressed: () {
-                    // Agregar al carrito
-                  },
-                  icon: Icon(
-                    Icons.add_shopping_cart,
-                    color: appDataProvider.backgroundColor,
-                    size: 14,
-                    weight: 500,
-                  ),
-                  label: Text(
-                    'Añadir',
-                    style: TextStyle(
-                        color: appDataProvider.backgroundColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
+              child: StreamBuilder<CartItem>(
+                  stream: cartProvider.getCartItem(widget.product.id),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data != null) {
+                      CartItem cartItem = snapshot.data!;
+                      return Center(
+                        child: CartItemCountWidget(cartItem: cartItem),
+                      );
+                    } else {
+                      return Container(
+                        height: 30,
+                        alignment: Alignment.center,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: appDataProvider.primaryColor,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 0,
+                            ),
+                          ),
+                          onPressed: () => _addToCart(),
+                          icon: Icon(
+                            Icons.add_shopping_cart,
+                            color: appDataProvider.backgroundColor,
+                            size: 14,
+                            weight: 500,
+                          ),
+                          label: Text(
+                            'Añadir',
+                            style: TextStyle(
+                                color: appDataProvider.backgroundColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      );
+                    }
+                  }),
             ),
           ],
         ),
@@ -292,7 +335,8 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                 ),
               ),
               onPressed: () {
-                // Agregar al carrito
+                _addToCart();
+                Navigator.of(context).pop();
               },
               icon: Icon(
                 Icons.add_shopping_cart,

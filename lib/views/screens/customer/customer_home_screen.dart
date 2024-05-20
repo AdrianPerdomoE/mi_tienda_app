@@ -19,11 +19,13 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   late AppDataProvider appDataProvider;
   late CartProvider cartProvider;
   int _currentIndex = 0;
+  
   final List<Widget> _screens = [
     const CustomerProductsScreen(),
     const CustomerCartScreen(),
     const CustomerProfileScreen()
   ];
+
   @override
   Widget build(BuildContext context) {
     appDataProvider = context.watch<AppDataProvider>();
@@ -48,46 +50,42 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
             ),
             BottomNavigationBarItem(
               icon: Stack(
-              children: [
-                const Icon(Icons.shopping_cart),
-                StreamBuilder<Object>(
-                  stream: cartProvider.cartCount,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const SizedBox();
+                children: [
+                  const Icon(Icons.shopping_cart),
+                  StreamBuilder<int>(
+                    stream: cartProvider.itemsCount,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData || snapshot.data == null || snapshot.data == 0) {
+                        return const SizedBox();
+                      }
+                      int cartCount = snapshot.data!;
+                      return Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: appDataProvider.accentColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 16,
+                            minHeight: 16,
+                          ),
+                          child: Text(
+                            cartCount.toString(),
+                            style: TextStyle(
+                              color: appDataProvider.backgroundColor,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
                     }
-                    final int count = snapshot.data as int;
-
-                    if (count == 0) {
-                      return const SizedBox();
-                    }
-                    return Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                      color: appDataProvider.accentColor,
-                      borderRadius: BorderRadius.circular(10),
-                      ),
-                      constraints: const BoxConstraints(
-                      minWidth: 16,
-                      minHeight: 16,
-                      ),
-                      child: Text(
-                      count.toString(),
-                      style: TextStyle(
-                        color: appDataProvider.backgroundColor,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                      ),
-                    ),
-                    );
-                  }
-                ),
-              ],
+                  ),
+                ],
               ),
               label: "Carrito",
             ),
