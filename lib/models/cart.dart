@@ -1,73 +1,36 @@
+import 'package:mi_tienda_app/models/cart_item.dart';
+
 class Cart {
   List<CartItem> items;
+
   Cart({required this.items});
+
   Cart.fromJson(Map<String, dynamic> json)
       : items = json['items']
             .map<CartItem>((item) => CartItem.fromJson(item))
             .toList();
-
-  double get total =>
-      items.fold(0, (total, item) => total + item.price * item.quantity);
-  deleteItem(String productId) {
-    items.removeWhere((element) => element.productId == productId);
-  }
-
-  _updateItem(CartItem item) {
-    items.removeWhere((element) => element.productId == item.productId);
-    items.add(item);
-  }
-
-  addItem(CartItem item) {
-    if (items.any((element) => element.productId == item.productId)) {
-      _updateItem(item);
-    } else {
-      items.add(item);
-    }
-  }
-
-  void emptyCart() {
-    items = [];
-  }
 
   toJson() {
     return {
       "items": items.map((item) => item.toJson()).toList(),
     };
   }
-}
 
-class CartItem {
-  String productId;
-  String productName;
-  double price;
-  int quantity;
-  String imageUrl;
-  double descount;
-  CartItem({
-    required this.productId,
-    required this.productName,
-    required this.price,
-    required this.quantity,
-    required this.imageUrl,
-    required this.descount,
-  });
+  int get totalItems {
+    int totalItems = 0;
+    for (var item in items) {
+      totalItems += item.quantity;
+    }
+    return totalItems;
+  }
 
-  CartItem.fromJson(Map<String, dynamic> json)
-      : productId = json['productId'],
-        productName = json['productName'],
-        price = json['price'],
-        quantity = json['quantity'],
-        imageUrl = json['imageUrl'],
-        descount = json['descount'];
-
-  toJson() {
-    return {
-      "productId": productId,
-      "productName": productName,
-      "price": price,
-      "quantity": quantity,
-      "imageUrl": imageUrl,
-      "descount": descount,
-    };
+  double get totalPrice {
+    double totalPrice = 0;
+    for (var item in items) {
+      double discount = item.price * item.discount;
+      double price = item.price - discount;
+      totalPrice += price * item.quantity;
+    }
+    return totalPrice;
   }
 }

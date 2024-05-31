@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mi_tienda_app/controllers/services/cart_database_service.dart';
 import 'package:mi_tienda_app/global/placeholder_images_urls.dart';
 //services
 import '../services/user_database_service.dart';
@@ -39,6 +40,12 @@ class AuthenticationProvider extends ChangeNotifier {
               this.lastSignInProvider = email;
             }
             this.user = value;
+
+            if (!GetIt.instance.isRegistered<CartDatabaseService>()) {
+              GetIt.instance.registerSingleton<CartDatabaseService>(
+                  CartDatabaseService(user.uid));
+            }
+
             notifyListeners();
             _navigationService
                 .removeAndNavigateToRoute('/${value.role.toLowerCase()}-home');
@@ -80,6 +87,10 @@ class AuthenticationProvider extends ChangeNotifier {
     try {
       await _auth.signOut();
       lastSignInProvider = null;
+
+      if (GetIt.instance.isRegistered<CartDatabaseService>()) {
+        GetIt.instance.unregister<CartDatabaseService>();
+      }
     } catch (e) {
       print(e);
     }

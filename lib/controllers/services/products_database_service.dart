@@ -22,38 +22,19 @@ class ProductsDatabaseService {
             .toList());
   }
 
-  // void filterProductsByName(String name) {
-  //   if (name.isEmpty) {
-  //     getAllProducts();
-  //   } else {
-  //     _products = _db
-  //         .collection(_productsCollection)
-  //         .where("hidden", isEqualTo: false)
-  //         .snapshots()
-  //         .map((snapshot) {
-  //       return snapshot.docs
-  //           .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
-  //           .where((product) =>
-  //               product.name.toLowerCase().contains(name.toLowerCase()))
-  //           .toList();
-  //     });
-  //   }
-  // }
-
-  // void filterProductsByCategories(List<String> categoryIds) {
-  //   if (categoryIds.isEmpty) {
-  //     getAllProducts();
-  //   } else {
-  //     _products = _db
-  //         .collection(_productsCollection)
-  //         .where("hidden", isEqualTo: false)
-  //         .where("categoryId", whereIn: categoryIds)
-  //         .snapshots()
-  //         .map((snapshot) => snapshot.docs
-  //             .map((doc) => Product.fromJson({"id": doc.id, ...doc.data()}))
-  //             .toList());
-  //   }
-  // }
+  Future<Product?> getProduct(String id) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> productDoc =
+          await _db.collection(_productsCollection).doc(id).get();
+      Map<String, dynamic>? data = productDoc.data();
+      if (data != null && !data["hidden"]) {
+        return Product.fromJson({"id": productDoc.id, ...data});
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
 
   Future<bool> add(String name, String description, PlatformFile image,
       double price, String categoryId, int stock, double discount) async {
@@ -106,6 +87,18 @@ class ProductsDatabaseService {
   Future<bool> updateHidden(String id, bool hidden) async {
     var product = {
       "hidden": hidden,
+    };
+    try {
+      await _db.collection(_productsCollection).doc(id).update(product);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> updateStock(String id, int stock) async {
+    var product = {
+      "stock": stock,
     };
     try {
       await _db.collection(_productsCollection).doc(id).update(product);
