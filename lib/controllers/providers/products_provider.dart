@@ -15,21 +15,23 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   void getProducts() {
-    products = _productsDatabaseService.getProducts();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      products = _productsDatabaseService.getProducts();
 
-    if (categoriesFilter.isNotEmpty) {
-      _filterProductsByCategories();
-    }
+      if (categoriesFilter.isNotEmpty) {
+        _filterProductsByCategories();
+      }
 
-    if (searchFilter.isNotEmpty) {
-      _filterProductsByName();
-    }
+      if (searchFilter.isNotEmpty) {
+        _filterProductsByName();
+      }
 
-    if (onlyVisible) {
-      _filterProductsByVisibility();
-    }
+      if (onlyVisible) {
+        _filterProductsByVisibility();
+      }
 
-    notifyListeners();
+      notifyListeners();
+    });
   }
 
   void setSearchFilter(String search) {

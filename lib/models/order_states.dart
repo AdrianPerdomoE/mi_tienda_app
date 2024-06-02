@@ -1,1 +1,1 @@
-enum OrderStates { pending, paid, credit, canceled }
+enum OrderStates { pendiente, pagado, fiado, cancelado }

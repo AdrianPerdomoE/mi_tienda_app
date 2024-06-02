@@ -1,6 +1,7 @@
 //packages
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
+import 'package:mi_tienda_app/controllers/providers/order_provider.dart';
 import 'package:provider/provider.dart';
 
 //screens
@@ -33,6 +34,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => OrderProvider()),
         ChangeNotifierProvider<AuthenticationProvider>(
           create: (context) => AuthenticationProvider(),
         ),
