@@ -22,7 +22,9 @@ class CartProvider extends ChangeNotifier {
     cart = _cartDatabaseService.getCart();
     getCartItemsCount();
     getCartTotalPrice();
-    notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
   void getCartItemsCount() {
