@@ -54,7 +54,7 @@ class OrderProvider with ChangeNotifier {
           discount: 0.2,
         ),
       ],
-      id: 'order2',
+      id: 'order3',
       userId: 'teuvzpu1jbeWKC5uOcbXceEvVpd2',
       state: OrderStates.pagado,
     ),
@@ -86,5 +86,21 @@ class OrderProvider with ChangeNotifier {
     final index = _orders.indexWhere((element) => element.id == order.id);
     _orders[index] = order;
     notifyListeners();
+  }
+
+  Stream<int> getPendingOrdersCount() async* {
+    yield _orders
+        .where((order) =>
+            order.state == OrderStates.pendiente ||
+            order.state == OrderStates.fiado)
+        .length;
+  }
+
+  int getPendingOrdersCountSync(List<Custom_order.Order> localOrders) {
+    return localOrders
+        .where((order) =>
+            order.state == OrderStates.pendiente ||
+            order.state == OrderStates.fiado)
+        .length;
   }
 }

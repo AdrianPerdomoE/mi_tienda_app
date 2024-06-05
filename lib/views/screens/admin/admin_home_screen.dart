@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/views/screens/admin/admin_profile_screen.dart';
+import 'package:provider/provider.dart';
 //widgets
+import '../../../controllers/providers/order_provider.dart';
 import "../../widgets/logout_button.dart";
 //screens
+import '../shared/amount_custom_icon.dart';
 import 'admin_order_screen.dart';
 import 'admin_product_screen.dart';
 
@@ -21,9 +24,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     const Text("Envios"),
     const AdminProfileScreen(),
   ];
-
+  late OrderProvider _orderProvider;
   @override
   Widget build(BuildContext context) {
+    _orderProvider = context.watch<OrderProvider>();
     return Scaffold(
         appBar: AppBar(
           actions: const [LogoutButton()],
@@ -37,20 +41,32 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
               _currentIndex = value;
             });
           },
-          items: const [
-            BottomNavigationBarItem(
+          items: [
+            const BottomNavigationBarItem(
               icon: Icon(Icons.store),
               label: "Productos",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.inventory),
+              icon: StreamBuilder(
+                  stream: _orderProvider.getPendingOrdersCount(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Icon(Icons.shopping_cart);
+                    }
+                    final pendingOrdersCount = snapshot.data;
+                    final amount = pendingOrdersCount ?? 0;
+                    return AmountCustomIcon(
+                      underElement: const Icon(Icons.inventory),
+                      amount: amount,
+                    );
+                  }),
               label: "Pedidos",
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.local_shipping),
               label: "Envios",
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.manage_accounts),
               label: "Perfil",
             ),

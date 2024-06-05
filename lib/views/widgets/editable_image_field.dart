@@ -107,12 +107,11 @@ class EditableImageRectangleField extends StatefulWidget {
 class _EditableImageRectangleFieldState
     extends State<EditableImageRectangleField> {
   late MediaService _mediaService;
-  late double _deviceHeight;
 
   @override
   Widget build(BuildContext context) {
     _mediaService = GetIt.instance.get<MediaService>();
-    _deviceHeight = MediaQuery.of(context).size.height;
+
     return GestureDetector(
       // Widget que permite detectar gestos
       child: widget.image !=

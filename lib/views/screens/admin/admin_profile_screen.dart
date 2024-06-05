@@ -171,7 +171,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AddDistributorDialog();
+                    return const AddDistributorDialog();
                   });
             },
             title: "Distribuidores",
