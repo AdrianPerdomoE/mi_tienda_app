@@ -1,8 +1,8 @@
 //packages
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
-import 'package:mi_tienda_app/controllers/providers/order_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:mi_tienda_app/views/screens/customer/customer_orders_screen.dart';
 
 //screens
 import 'views/screens/customer/customer_home_screen.dart';
@@ -21,6 +21,8 @@ import 'package:mi_tienda_app/controllers/providers/loading_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/categories_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/products_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/cart_provider.dart';
+import 'package:mi_tienda_app/controllers/providers/order_provider.dart';
+import 'package:mi_tienda_app/controllers/providers/customer_orders_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +55,9 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider<CartProvider>(
           create: (context) => CartProvider(),
         ),
+        ChangeNotifierProvider<CustomerOrdersProvider>(
+          create: (context) => CustomerOrdersProvider(),
+        ),
       ],
       child: Builder(
         builder: (context) => _buildMaterialApp(context),
@@ -76,6 +81,7 @@ MaterialApp _buildMaterialApp(BuildContext context) {
       '/register': (context) => const RegisterScreen(),
       '/admin-home': (context) => const AdminHomeScreen(),
       '/customer-home': (context) => const CustomerHomeScreen(),
+      '/customer-orders': (context) => const CustomerOrdersScreen(),
     },
     initialRoute: '/',
     debugShowCheckedModeBanner: false,
