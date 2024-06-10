@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/cart_provider.dart';
 import 'package:mi_tienda_app/views/screens/customer/customer_cart_screen.dart';
+import 'package:mi_tienda_app/views/screens/customer/customer_orders_screen.dart';
 import 'package:mi_tienda_app/views/screens/customer/customer_products_screen.dart';
 import '../shared/amount_custom_icon.dart';
 import 'customer_profile_screen.dart';
@@ -24,6 +25,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   final List<Widget> _screens = [
     const CustomerProductsScreen(),
     const CustomerCartScreen(),
+    const CustomerOrdersScreen(),
     const CustomerProfileScreen()
   ];
 
@@ -38,6 +40,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
           title: Text(appDataProvider.appName),
         ),
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
           currentIndex: _currentIndex,
           onTap: (value) {
             setState(() {
@@ -65,6 +68,10 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                 },
               ),
               label: "Carrito",
+            ),
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_bag),
+              label: "Pedidos",
             ),
             const BottomNavigationBarItem(
               icon: Icon(Icons.person),

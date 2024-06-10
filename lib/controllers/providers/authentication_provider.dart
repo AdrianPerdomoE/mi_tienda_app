@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mi_tienda_app/controllers/services/cart_database_service.dart';
+import 'package:mi_tienda_app/controllers/services/customer_orders_database_service.dart';
 import 'package:mi_tienda_app/global/placeholder_images_urls.dart';
 //services
 import '../services/user_database_service.dart';
@@ -44,6 +45,11 @@ class AuthenticationProvider extends ChangeNotifier {
             if (!GetIt.instance.isRegistered<CartDatabaseService>()) {
               GetIt.instance.registerSingleton<CartDatabaseService>(
                   CartDatabaseService(user.uid));
+            }
+
+            if (!GetIt.instance.isRegistered<CustomerOrdersDatabaseService>()) {
+              GetIt.instance.registerSingleton<CustomerOrdersDatabaseService>(
+                  CustomerOrdersDatabaseService(user.uid));
             }
 
             notifyListeners();

@@ -34,4 +34,12 @@ class Order {
         createdAt = json['createdAt'],
         state = OrderStates.values
             .firstWhere((element) => element.name == json['state']);
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'items': items.map((item) => item.toJson()).toList(),
+        'userId': userId,
+        'state': state.name,
+        'createdAt': createdAt,
+      };
 }

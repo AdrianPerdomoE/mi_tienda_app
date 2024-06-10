@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mi_tienda_app/controllers/utils/custom_formats.dart';
 import '../../models/order.dart';
 import '../../models/order_states.dart';
 
@@ -36,7 +37,7 @@ class _OrderExpansionPanelListState extends State<OrderExpansionPanelList> {
                   DateTime date = order.createdAt.toDate().toLocal();
                   return ListTile(
                     title: Text(
-                        "${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second} - Total: ${order.amount()} \$"),
+                        "${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second} - Total: ${toCOP(order.amount())}"),
                     subtitle: Row(
                       children: [
                         const Text(
@@ -73,7 +74,7 @@ class _OrderExpansionPanelListState extends State<OrderExpansionPanelList> {
                     return ListTile(
                       title: Text(item.productName),
                       subtitle: Text(
-                          "Precio unitario (descuento incluido): ${item.price * (1 - item.discount)} \$"),
+                          "Precio unitario (descuento incluido): ${toCOP(item.price * (1 - item.discount))}"),
                       leading: Container(
                         height: 60,
                         width: 60,
