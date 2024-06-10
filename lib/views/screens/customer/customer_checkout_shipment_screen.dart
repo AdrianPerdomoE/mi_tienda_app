@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/providers/cart_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/customer_orders_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/products_provider.dart';
@@ -50,6 +51,8 @@ class _CustomerCheckoutShipmentScreenState
     cartProvider = context.watch<CartProvider>();
     ordersProvider = context.watch<CustomerOrdersProvider>();
     productsProvider = context.watch<ProductsProvider>();
+    notificationService = GetIt.instance.get<NotificationService>();
+
 
     return Scaffold(
       appBar: AppBar(
@@ -105,16 +108,15 @@ class _CustomerCheckoutShipmentScreenState
                     },
                   ),
                   ElevatedButton(
-                    onPressed: ordersProvider.selectedShipmentMethod != null
-                        ? () {
+                    onPressed: ordersProvider.selectedShipmentMethod != null && cart.items.isNotEmpty
+                        ? () async {
                             ordersProvider.createOrder(cart).then((value) {
                               if (value) {
                                 productsProvider.decreaseStockWithOrder(cart);
                                 cartProvider.clearCart();
-                                notificationSuccess(
+                                 notificationSuccess(
                                     'Pedido realizado correctamente. Ve a Mis pedidos para ver el estado del pedido.');
-                                Navigator.pushNamed(
-                                    context, '/customer-home');
+                                Navigator.pushNamed(context, '/customer-home');
                               } else {
                                 notificationError(
                                     'Error al realizar el pedido');
