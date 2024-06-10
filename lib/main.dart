@@ -1,6 +1,7 @@
 //packages
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
+import 'package:mi_tienda_app/views/screens/customer/customer_checkout_payment_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:mi_tienda_app/views/screens/customer/customer_orders_screen.dart';
 
@@ -82,6 +83,7 @@ MaterialApp _buildMaterialApp(BuildContext context) {
       '/admin-home': (context) => const AdminHomeScreen(),
       '/customer-home': (context) => const CustomerHomeScreen(),
       '/customer-orders': (context) => const CustomerOrdersScreen(),
+      '/customer-checkout': (context) => const CustomerCheckoutPaymentScreen(),
     },
     initialRoute: '/',
     debugShowCheckedModeBanner: false,

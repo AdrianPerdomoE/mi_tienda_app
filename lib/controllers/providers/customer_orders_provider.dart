@@ -1,93 +1,55 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/services/customer_orders_database_service.dart';
-import 'package:mi_tienda_app/global/placeholder_images_urls.dart';
-import 'package:mi_tienda_app/models/cart_item.dart';
+import 'package:mi_tienda_app/models/cart.dart';
 import 'package:mi_tienda_app/models/order.dart' as customer_order;
-import 'package:mi_tienda_app/models/order_states.dart';
+import 'package:mi_tienda_app/models/payment_method.dart';
+import 'package:mi_tienda_app/models/shipment_method.dart';
 
 class CustomerOrdersProvider extends ChangeNotifier {
   late final CustomerOrdersDatabaseService _ordersDatabaseService;
-  List<customer_order.Order> orders = [
-    customer_order.Order(
-      createdAt: Timestamp.now(),
-      items: [
-        CartItem(
-          productId: 'product1',
-          productName: 'Product 1',
-          price: 20.0,
-          quantity: 2,
-          imageUrl: PlaceholderImagesUrls.png150Image,
-          discount: 0.1,
-        ),
-        CartItem(
-          productId: 'product2',
-          productName: 'Product 2',
-          price: 30.0,
-          quantity: 1,
-          imageUrl: PlaceholderImagesUrls.png150Image,
-          discount: 0.2,
-        ),
-      ],
-      id: 'order1',
-      userId: 'teuvzpu1jbeWKC5uOcbXceEvVpd2',
-      state: OrderStates.pendiente,
-    ),
-    customer_order.Order(
-      createdAt: Timestamp.now(),
-      items: [
-        CartItem(
-          productId: 'product2',
-          productName: 'Product 1',
-          price: 20.0,
-          quantity: 2,
-          imageUrl: PlaceholderImagesUrls.png150Image,
-          discount: 0.1,
-        ),
-        CartItem(
-          productId: 'product2',
-          productName: 'Product 2',
-          price: 30.0,
-          quantity: 1,
-          imageUrl: PlaceholderImagesUrls.png150Image,
-          discount: 0.2,
-        ),
-      ],
-      id: 'order3',
-      userId: 'teuvzpu1jbeWKC5uOcbXceEvVpd2',
-      state: OrderStates.pagado,
-    ),
-    customer_order.Order(
-      createdAt: Timestamp.now(),
-      items: [
-        CartItem(
-          productId: 'product3',
-          productName: 'Product 3',
-          price: 40.0,
-          quantity: 3,
-          imageUrl: PlaceholderImagesUrls.png150Image,
-          discount: 0.3,
-        ),
-      ],
-      id: 'order2',
-      userId: 'rfGyu9vPPsauMZdyWUslt2pln6x1',
-      state: OrderStates.fiado,
-    ),
-    // Agrega más órdenes aquí
-  ];
+  Future<List<customer_order.Order>> orders = Future.value([]);
+  PaymentMethod? _selectedPaymentMethod;
+  ShipmentMethod? _selectedShipmentMethod;
+  get selectedPaymentMethod => _selectedPaymentMethod;
+  get selectedShipmentMethod => _selectedShipmentMethod;
 
   CustomerOrdersProvider() {
-    _ordersDatabaseService = GetIt.instance.get<CustomerOrdersDatabaseService>();
+    _ordersDatabaseService =
+        GetIt.instance.get<CustomerOrdersDatabaseService>();
   }
 
-  void getOrders() {
-    _ordersDatabaseService.getOrders().then((value) {
-      orders = value;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+  Future<void> getOrders() async {
+    orders = _ordersDatabaseService.getOrders();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       notifyListeners();
     });
+  }
+
+  void setPaymentMethod(PaymentMethod? paymentMethod) {
+    _selectedPaymentMethod = paymentMethod;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
     });
   }
-}
 
+  void setShipmentMethod(ShipmentMethod? shipmentMethod) {
+    _selectedShipmentMethod = shipmentMethod;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
+  }
+
+  Future<bool> createOrder(Cart cart) async {
+    if (_selectedPaymentMethod == null || _selectedShipmentMethod == null) {
+      return false;
+    }
+    
+    return _ordersDatabaseService.createOrder(
+      cart,
+      _selectedPaymentMethod!,
+      _selectedShipmentMethod!,
+    );
+    
+  }
+}

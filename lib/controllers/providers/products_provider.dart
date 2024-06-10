@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/services/products_database_service.dart';
+import 'package:mi_tienda_app/models/cart.dart';
 import 'package:mi_tienda_app/models/product.dart';
 
 class ProductsProvider extends ChangeNotifier {
@@ -85,5 +86,9 @@ class ProductsProvider extends ChangeNotifier {
     products = products.map((products) {
       return products.where((product) => !product.hidden).toList();
     });
+  }
+
+  Future<void> decreaseStockWithOrder(Cart cart) async {
+    await _productsDatabaseService.decreaseStockWithOrder(cart.items);
   }
 }

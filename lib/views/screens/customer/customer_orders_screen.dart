@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mi_tienda_app/controllers/providers/app__data_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/customer_orders_provider.dart';
+import 'package:mi_tienda_app/models/order.dart';
 import 'package:mi_tienda_app/views/widgets/order_expasion_panel_list.dart';
 import 'package:provider/provider.dart';
 
@@ -42,9 +43,23 @@ class _CustomerOrdersScreenState extends State<CustomerOrdersScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          OrderExpansionPanelList(
-              orders: customerOrdersProvider.orders,
-              onOrderStateChange: (order, state) {}),
+          FutureBuilder(
+              future: customerOrdersProvider.orders,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child:
+                        Text('Error al cargar los pedidos ${snapshot.error}'),
+                  );
+                }
+
+                List<Order> orders = snapshot.data as List<Order>;
+                return OrderExpansionPanelList(
+                    orders: orders, onOrderStateChange: (order, state) {});
+              }),
         ],
       ),
     );
