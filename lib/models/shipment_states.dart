@@ -1,1 +1,1 @@
-enum ShipmentStates { pending, inProgress, delivered, cancelled }
+enum ShipmentStates { pendiente, enProgreso, entregado, cancelado }

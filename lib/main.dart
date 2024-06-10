@@ -25,6 +25,9 @@ import 'package:mi_tienda_app/controllers/providers/cart_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/order_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/customer_orders_provider.dart';
 
+import 'package:mi_tienda_app/controllers/providers/shipment_provider.dart';
+
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp().then((value) => runApp(const MainApp()));
@@ -59,6 +62,9 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider<CustomerOrdersProvider>(
           create: (context) => CustomerOrdersProvider(),
         ),
+        ChangeNotifierProvider<ShipmentProvider>(
+          create: (context) => ShipmentProvider(),
+        )
       ],
       child: Builder(
         builder: (context) => _buildMaterialApp(context),
