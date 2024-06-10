@@ -21,6 +21,7 @@ import 'package:mi_tienda_app/controllers/providers/loading_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/categories_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/products_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/cart_provider.dart';
+import 'package:mi_tienda_app/controllers/providers/shipment_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +54,9 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider<CartProvider>(
           create: (context) => CartProvider(),
         ),
+        ChangeNotifierProvider<ShipmentProvider>(
+          create: (context) => ShipmentProvider(),
+        )
       ],
       child: Builder(
         builder: (context) => _buildMaterialApp(context),

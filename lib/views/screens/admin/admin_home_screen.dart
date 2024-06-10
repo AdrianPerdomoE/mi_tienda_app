@@ -8,6 +8,7 @@ import "../../widgets/logout_button.dart";
 import '../shared/amount_custom_icon.dart';
 import 'admin_order_screen.dart';
 import 'admin_product_screen.dart';
+import 'admin_shipments_screen.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -21,7 +22,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   final List<Widget> _screens = [
     const AdminProductScreen(),
     const AdminOrderScreen(),
-    const Text("Envios"),
+    const AdminShipmentsScreen(),
     const AdminProfileScreen(),
   ];
   late OrderProvider _orderProvider;
