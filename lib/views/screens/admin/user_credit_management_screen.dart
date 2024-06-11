@@ -58,6 +58,7 @@ class _UserCreditManagement extends State<UserCreditManagement> {
             : "${creditOrders.fold(0.0, (previousValue, element) => previousValue + element.amount())} \$"),
       ),
       OrderExpansionPanelList(
+        canChangeState: true,
         orders: creditOrders,
         onOrderStateChange: (order, state) {
           setState(() {

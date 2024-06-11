@@ -6,8 +6,12 @@ import '../../models/order_states.dart';
 class OrderExpansionPanelList extends StatefulWidget {
   final List<Order> orders;
   final Function(Order, OrderStates) onOrderStateChange;
+  final bool canChangeState;
   const OrderExpansionPanelList(
-      {super.key, required this.orders, required this.onOrderStateChange});
+      {super.key,
+      required this.orders,
+      required this.onOrderStateChange,
+      required this.canChangeState});
 
   @override
   State<OrderExpansionPanelList> createState() =>
@@ -45,26 +49,32 @@ class _OrderExpansionPanelListState extends State<OrderExpansionPanelList> {
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.bold),
                         ),
-                        DropdownButton<OrderStates>(
-                          value: order.state,
-                          elevation: 16,
-                          style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                          underline: Container(
-                            height: 0,
-                          ),
-                          onChanged: (state) {
-                            widget.onOrderStateChange(order, state!);
-                          },
-                          items: OrderStates.values
-                              .map((state) => DropdownMenuItem(
-                                    value: state,
-                                    child: Text(state.name),
-                                  ))
-                              .toList(),
-                        ),
+                        !widget.canChangeState
+                            ? Text(
+                                order.state.name,
+                                style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.bold),
+                              )
+                            : DropdownButton<OrderStates>(
+                                value: order.state,
+                                elevation: 16,
+                                style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                                underline: Container(
+                                  height: 0,
+                                ),
+                                onChanged: (state) {
+                                  widget.onOrderStateChange(order, state!);
+                                },
+                                items: OrderStates.values
+                                    .map((state) => DropdownMenuItem(
+                                          value: state,
+                                          child: Text(state.name),
+                                        ))
+                                    .toList(),
+                              ),
                       ],
                     ),
                   );

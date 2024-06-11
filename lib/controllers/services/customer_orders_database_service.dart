@@ -9,15 +9,28 @@ class CustomerOrdersDatabaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final String _ordersCollection = "Orders";
   final String _uid;
-
+  DocumentSnapshot? _lastDocument;
   CustomerOrdersDatabaseService(this._uid);
-
-  Future<List<customer_order.Order>> getOrders() async {
-    final orders = await _db
+  late bool nextAvailable;
+  Future<List<customer_order.Order>> getOrders({bool nextPage = false}) async {
+    Query query = _db
         .collection(_ordersCollection)
         .where('userId', isEqualTo: _uid)
         .orderBy('createdAt', descending: true)
-        .get();
+        .limit(20);
+
+    // Si estamos obteniendo la siguiente página, comienza después del último documento.
+    if (nextPage && _lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+    }
+
+    final orders = await query.get() as QuerySnapshot<Map<String, dynamic>>;
+
+    // Si hay resultados, guarda el último documento para la próxima página.
+    if (orders.docs.isNotEmpty) {
+      _lastDocument = orders.docs.last;
+    }
+
     return orders.docs
         .map((order) =>
             customer_order.Order.fromJson({...order.data(), "id": order.id}))

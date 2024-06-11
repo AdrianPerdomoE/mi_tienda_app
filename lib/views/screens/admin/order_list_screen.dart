@@ -25,6 +25,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
           controller: _scrollController,
           child: OrderExpansionPanelList(
               orders: widget.orders,
+              canChangeState: true,
               onOrderStateChange: (order, state) {
                 setState(() {
                   order.state = state;

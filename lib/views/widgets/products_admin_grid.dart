@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/services/notification_service.dart';
+import 'package:mi_tienda_app/controllers/services/products_database_service.dart';
 //models
 import 'package:mi_tienda_app/models/product.dart';
 //widgets
@@ -46,9 +48,10 @@ class ProductAdminCard extends StatefulWidget {
   State<ProductAdminCard> createState() => _ProductAdminCardState();
 }
 
-final NotificationService _notificationService = NotificationService();
-
 class _ProductAdminCardState extends State<ProductAdminCard> {
+  final NotificationService _notificationService = NotificationService();
+  final ProductsDatabaseService _productsDatabaseService =
+      GetIt.instance.get<ProductsDatabaseService>();
   @override
   Widget build(BuildContext context) {
     final AppDataProvider appDataProvider = context.watch<AppDataProvider>();
@@ -189,13 +192,13 @@ class _ProductAdminCardState extends State<ProductAdminCard> {
                       color: appDataProvider.accentColor,
                       size: 20),
                   onPressed: () {
-                    setState(() {
-                      widget.product.hidden = !widget.product.hidden;
-                      _notificationService.showNotificationBottom(
-                          context,
-                          "El producto: ${widget.product.name} ahora ya ${widget.product.hidden ? 'no es' : "es"} publico",
-                          NotificationType.info);
-                    });
+                    _productsDatabaseService
+                        .updateHidden(widget.product.id, !widget.product.hidden)
+                        .then((value) =>
+                            _notificationService.showNotificationBottom(
+                                context,
+                                "El producto: ${widget.product.name} ahora ya ${widget.product.hidden ? 'no es' : "es"} publico",
+                                NotificationType.info));
                   },
                 ),
               ],

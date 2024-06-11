@@ -8,19 +8,31 @@ import 'package:mi_tienda_app/models/shipment_method.dart';
 
 class CustomerOrdersProvider extends ChangeNotifier {
   late final CustomerOrdersDatabaseService _ordersDatabaseService;
-  Future<List<customer_order.Order>> orders = Future.value([]);
+  List<customer_order.Order> orders = [];
   PaymentMethod? _selectedPaymentMethod;
   ShipmentMethod? _selectedShipmentMethod;
   get selectedPaymentMethod => _selectedPaymentMethod;
   get selectedShipmentMethod => _selectedShipmentMethod;
-
+  bool nextAvailable = true;
   CustomerOrdersProvider() {
     _ordersDatabaseService =
         GetIt.instance.get<CustomerOrdersDatabaseService>();
   }
 
-  Future<void> getOrders() async {
-    orders = _ordersDatabaseService.getOrders();
+  Future<void> refresh() async {
+    orders.clear();
+    List<customer_order.Order> nextOrders =
+        await _ordersDatabaseService.getOrders();
+    nextAvailable = nextOrders.isNotEmpty;
+    orders.addAll(nextOrders);
+    notifyListeners();
+  }
+
+  Future<void> getOrders({bool next = true}) async {
+    List<customer_order.Order> nextOrders =
+        await _ordersDatabaseService.getOrders(nextPage: next);
+    orders.addAll(nextOrders);
+    nextAvailable = nextOrders.isNotEmpty;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       notifyListeners();
     });
@@ -44,12 +56,11 @@ class CustomerOrdersProvider extends ChangeNotifier {
     if (_selectedPaymentMethod == null || _selectedShipmentMethod == null) {
       return false;
     }
-    
+
     return _ordersDatabaseService.createOrder(
       cart,
       _selectedPaymentMethod!,
       _selectedShipmentMethod!,
     );
-    
   }
 }

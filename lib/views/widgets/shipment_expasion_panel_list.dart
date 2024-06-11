@@ -17,7 +17,8 @@ class ShipmentExpansionPanelList extends StatefulWidget {
       _ShipmentExpansionPanelListState();
 }
 
-class _ShipmentExpansionPanelListState extends State<ShipmentExpansionPanelList> {
+class _ShipmentExpansionPanelListState
+    extends State<ShipmentExpansionPanelList> {
   late List<bool> _data;
   @override
   void initState() {
@@ -28,22 +29,9 @@ class _ShipmentExpansionPanelListState extends State<ShipmentExpansionPanelList>
   @override
   Widget build(BuildContext context) {
     final orderProvider = Provider.of<OrderProvider>(context);
-    final orders = orderProvider.orders;
 
     List<Widget> orderItemsWidgets = [];
-    for (var order in orders) {
-      for (var item in order.items){
-        orderItemsWidgets.add(
-          ListTile(
-            title: Text(item.productName),
-            subtitle: Text("Cantidad: ${item.quantity}"),
-            leading: Image.network(item.imageUrl),
-            trailing: Text("Precio: ${item.price} \$"),
-          ),
-        );
-      }
-    }
-    
+
     return ExpansionPanelList(
       expansionCallback: (int index, bool isExpanded) {
         setState(() {
@@ -57,8 +45,7 @@ class _ShipmentExpansionPanelListState extends State<ShipmentExpansionPanelList>
                   DateTime date = shipment.creationDate.toLocal();
                   return ListTile(
                     title: Text(
-                      "${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second}"
-                    ),
+                        "${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second}"),
                     subtitle: Row(
                       children: [
                         const Text(
