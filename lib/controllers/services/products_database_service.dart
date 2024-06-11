@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/global/placeholder_images_urls.dart';
+import 'package:mi_tienda_app/models/cart_item.dart';
 import 'package:mi_tienda_app/models/product.dart';
 import 'cloud_storage_service.dart';
 
@@ -111,6 +112,19 @@ class ProductsDatabaseService {
   Future<bool> delete(String id) async {
     try {
       await _db.collection(_productsCollection).doc(id).delete();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> decreaseStockWithOrder(List<CartItem> items) async {
+    try {
+      for (var item in items) {
+        await _db.collection(_productsCollection).doc(item.productId).update({
+          "stock": FieldValue.increment(-item.quantity),
+        });
+      }
       return true;
     } catch (e) {
       return false;

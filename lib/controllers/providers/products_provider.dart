@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mi_tienda_app/controllers/services/products_database_service.dart';
+import 'package:mi_tienda_app/models/cart.dart';
 import 'package:mi_tienda_app/models/product.dart';
 
 class ProductsProvider extends ChangeNotifier {
@@ -15,21 +16,23 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   void getProducts() {
-    products = _productsDatabaseService.getProducts();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      products = _productsDatabaseService.getProducts();
 
-    if (categoriesFilter.isNotEmpty) {
-      _filterProductsByCategories();
-    }
+      if (categoriesFilter.isNotEmpty) {
+        _filterProductsByCategories();
+      }
 
-    if (searchFilter.isNotEmpty) {
-      _filterProductsByName();
-    }
+      if (searchFilter.isNotEmpty) {
+        _filterProductsByName();
+      }
 
-    if (onlyVisible) {
-      _filterProductsByVisibility();
-    }
+      if (onlyVisible) {
+        _filterProductsByVisibility();
+      }
 
-    notifyListeners();
+      notifyListeners();
+    });
   }
 
   void setSearchFilter(String search) {
@@ -83,5 +86,9 @@ class ProductsProvider extends ChangeNotifier {
     products = products.map((products) {
       return products.where((product) => !product.hidden).toList();
     });
+  }
+
+  Future<void> decreaseStockWithOrder(Cart cart) async {
+    await _productsDatabaseService.decreaseStockWithOrder(cart.items);
   }
 }

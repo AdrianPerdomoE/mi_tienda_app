@@ -1,7 +1,9 @@
 //packages
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
+import 'package:mi_tienda_app/views/screens/customer/customer_checkout_payment_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:mi_tienda_app/views/screens/customer/customer_orders_screen.dart';
 
 //screens
 import 'views/screens/customer/customer_home_screen.dart';
@@ -20,6 +22,11 @@ import 'package:mi_tienda_app/controllers/providers/loading_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/categories_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/products_provider.dart';
 import 'package:mi_tienda_app/controllers/providers/cart_provider.dart';
+import 'package:mi_tienda_app/controllers/providers/order_provider.dart';
+import 'package:mi_tienda_app/controllers/providers/customer_orders_provider.dart';
+
+import 'package:mi_tienda_app/controllers/providers/shipment_provider.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +40,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => OrderProvider()),
         ChangeNotifierProvider<AuthenticationProvider>(
           create: (context) => AuthenticationProvider(),
         ),
@@ -51,6 +59,12 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider<CartProvider>(
           create: (context) => CartProvider(),
         ),
+        ChangeNotifierProvider<CustomerOrdersProvider>(
+          create: (context) => CustomerOrdersProvider(),
+        ),
+        ChangeNotifierProvider<ShipmentProvider>(
+          create: (context) => ShipmentProvider(),
+        )
       ],
       child: Builder(
         builder: (context) => _buildMaterialApp(context),
@@ -74,6 +88,8 @@ MaterialApp _buildMaterialApp(BuildContext context) {
       '/register': (context) => const RegisterScreen(),
       '/admin-home': (context) => const AdminHomeScreen(),
       '/customer-home': (context) => const CustomerHomeScreen(),
+      '/customer-orders': (context) => const CustomerOrdersScreen(),
+      '/customer-checkout': (context) => const CustomerCheckoutPaymentScreen(),
     },
     initialRoute: '/',
     debugShowCheckedModeBanner: false,

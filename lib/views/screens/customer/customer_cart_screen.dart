@@ -86,45 +86,52 @@ class _CustomerCartScreenState extends State<CustomerCartScreen> {
       ),
       bottomNavigationBar: BottomAppBar(
         child: StreamBuilder<double>(
-          stream: cartProvider.totalPrice,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const SizedBox.shrink();
-            }
-            double totalPrice = snapshot.data!;
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Total: ${toCOP(totalPrice)}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                ElevatedButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(horizontal: 16),
-                    ),
-                    backgroundColor: MaterialStateProperty.all(
-                      appDataProvider.primaryColor,
+            stream: cartProvider.totalPrice,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const SizedBox.shrink();
+              }
+              double totalPrice = snapshot.data!;
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total: ${toCOP(totalPrice)}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  onPressed: () {
-                    // Implement the checkout logic here
-                  },
-                  child: Text(
-                    'Confirmar compra',
-                    style: TextStyle(
-                      color: appDataProvider.backgroundColor,
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all(
+                        const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.disabled)) {
+                            return appDataProvider.primaryColor
+                                .withOpacity(0.5);
+                          }
+                          return appDataProvider.primaryColor;
+                        },
+                      ),
+                    ),
+                    onPressed: totalPrice > 0
+                        ? () {
+                            Navigator.pushNamed(context, '/customer-checkout');
+                          }
+                        : null,
+                    child: Text(
+                      'Confirmar compra',
+                      style: TextStyle(
+                        color: appDataProvider.backgroundColor,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            );
-          }
-        ),
+                ],
+              );
+            }),
       ),
     );
   }
