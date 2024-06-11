@@ -31,7 +31,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
                   context.read<OrderProvider>().update(order);
                 });
-              }),
+              }, isEditable: true,),
         ));
   }
 }
