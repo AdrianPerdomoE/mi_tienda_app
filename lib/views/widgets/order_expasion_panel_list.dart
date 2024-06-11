@@ -6,8 +6,9 @@ import '../../models/order_states.dart';
 class OrderExpansionPanelList extends StatefulWidget {
   final List<Order> orders;
   final Function(Order, OrderStates) onOrderStateChange;
+  final bool isEditable;
   const OrderExpansionPanelList(
-      {super.key, required this.orders, required this.onOrderStateChange});
+      {super.key, required this.orders, required this.onOrderStateChange, this.isEditable = false});
 
   @override
   State<OrderExpansionPanelList> createState() =>
@@ -45,6 +46,7 @@ class _OrderExpansionPanelListState extends State<OrderExpansionPanelList> {
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.bold),
                         ),
+                        if (widget.isEditable)
                         DropdownButton<OrderStates>(
                           value: order.state,
                           elevation: 16,
@@ -64,6 +66,12 @@ class _OrderExpansionPanelListState extends State<OrderExpansionPanelList> {
                                     child: Text(state.name),
                                   ))
                               .toList(),
+                        ),
+                        if (!widget.isEditable)
+                           Text(
+                          order.state.name,
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),

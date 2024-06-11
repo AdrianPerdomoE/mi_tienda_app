@@ -3,6 +3,7 @@
 import "package:mi_tienda_app/controllers/services/categories_database_service.dart";
 import "package:mi_tienda_app/controllers/services/distributor_database_service.dart";
 import "package:mi_tienda_app/controllers/services/notification_service.dart";
+import "package:mi_tienda_app/controllers/services/shipments_database_service.dart";
 import 'package:provider/provider.dart';
 
 import "package:flutter/material.dart";
@@ -111,6 +112,10 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!GetIt.instance.isRegistered<NotificationService>()) {
       GetIt.instance
           .registerSingleton<NotificationService>(NotificationService());
+    }
+    if (!GetIt.instance.isRegistered<ShipmentsDatabaseService>()) {
+      GetIt.instance.registerSingleton<ShipmentsDatabaseService>(
+          ShipmentsDatabaseService());
     }
   }
 }

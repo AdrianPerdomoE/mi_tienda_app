@@ -24,7 +24,7 @@ class CustomerOrdersDatabaseService {
         .toList();
   }
 
-  Future<bool> createOrder(Cart cart, PaymentMethod paymentMethod,
+  Future<String?> createOrder(Cart cart, PaymentMethod paymentMethod,
       ShipmentMethod shipmentMethod) async {
     try {
       OrderStates state = OrderStates.pendiente;
@@ -51,9 +51,9 @@ class CustomerOrdersDatabaseService {
       final DocumentReference orderRef =
           await _db.collection(_ordersCollection).add(orderData);
 
-      return orderRef.id.isNotEmpty;
+      return orderRef.id;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 }
