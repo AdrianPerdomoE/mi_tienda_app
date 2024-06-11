@@ -8,9 +8,10 @@ import 'package:mi_tienda_app/models/shipment_method.dart';
 class CustomerOrdersDatabaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final String _ordersCollection = "Orders";
-  final String _uid;
+  String _uid;
   DocumentSnapshot? _lastDocument;
   CustomerOrdersDatabaseService(this._uid);
+
   late bool nextAvailable;
   Future<List<customer_order.Order>> getOrders({bool nextPage = false}) async {
     Query query = _db
@@ -35,6 +36,10 @@ class CustomerOrdersDatabaseService {
         .map((order) =>
             customer_order.Order.fromJson({...order.data(), "id": order.id}))
         .toList();
+  }
+
+  setUid(String uid) {
+    _uid = uid;
   }
 
   Future<bool> createOrder(Cart cart, PaymentMethod paymentMethod,

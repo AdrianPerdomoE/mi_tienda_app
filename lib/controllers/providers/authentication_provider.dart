@@ -1,4 +1,6 @@
 // packages
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
@@ -30,6 +32,7 @@ class AuthenticationProvider extends ChangeNotifier {
     _auth = FirebaseAuth.instance;
     _navigationService = GetIt.instance.get<NavigationService>();
     _databaseService = GetIt.instance.get<UserDatabaseService>();
+
     _auth.authStateChanges().listen((User? user) {
       if (user != null) {
         _databaseService.getUser(user.uid).then((value) {
@@ -45,13 +48,18 @@ class AuthenticationProvider extends ChangeNotifier {
             if (!GetIt.instance.isRegistered<CartDatabaseService>()) {
               GetIt.instance.registerSingleton<CartDatabaseService>(
                   CartDatabaseService(user.uid));
+            } else {
+              GetIt.instance.get<CartDatabaseService>().setUid(user.uid);
             }
 
             if (!GetIt.instance.isRegistered<CustomerOrdersDatabaseService>()) {
               GetIt.instance.registerSingleton<CustomerOrdersDatabaseService>(
                   CustomerOrdersDatabaseService(user.uid));
+            } else {
+              GetIt.instance
+                  .get<CustomerOrdersDatabaseService>()
+                  .setUid(user.uid);
             }
-
             notifyListeners();
             _navigationService
                 .removeAndNavigateToRoute('/${value.role.toLowerCase()}-home');

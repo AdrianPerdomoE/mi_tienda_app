@@ -64,7 +64,6 @@ class _CustomerOrdersScreenState extends State<CustomerOrdersScreen> {
     _scrollController.dispose();
     super.dispose();
     customerOrdersProvider.orders.clear();
-    customerOrdersProvider.getOrders(next: false);
   }
 
   @override

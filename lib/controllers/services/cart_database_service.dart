@@ -6,7 +6,11 @@ import 'package:mi_tienda_app/models/product.dart';
 class CartDatabaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final String _usersCollections = "Users";
-  final String _uid;
+  String _uid;
+
+  setUid(String uid) {
+    _uid = uid;
+  }
 
   CartDatabaseService(this._uid);
 
